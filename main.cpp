@@ -9,6 +9,7 @@
 #include <fstream>
 #include <algorithm>
 #include <string>
+#include <chrono>
 
 using namespace Algora;
 
@@ -51,49 +52,37 @@ namespace
 
 int main()
 {
-    SimpleESTree<false> simpleES;
+    SimpleESTree<false, ParentSelectStrategy::firstOptimal> simpleES;
 
     DynamicDiGraph dynamicGraph = readKroneckerGraph("graphs/gnutella-25");
     const auto graph = dynamicGraph.getDiGraph();
     simpleES.setGraph(graph);
     size_t operationIndex = 0;
-    while (graph->getSize() < 1)
-    {
-        dynamicGraph.applyNextOperation();
-        operationIndex++;
-    }
-    const auto source = graph->vertexAt(0);
-    simpleES.setSource(source);
 
     std::cout << std::boolalpha;
-    std::cout << "Algorithm is perpared: " << simpleES.prepare() << std::endl;
 
-    constexpr size_t finalOperationIndex = 223057LLU;
-    const std::string targetVertexName = "117";
-    const Vertex *vertex = nullptr;
-    for (size_t operationCount = 0; operationCount < finalOperationIndex + 1; operationCount++)
+    constexpr unsigned iterationCount = 100;
+
+    const auto timeBefore = std::chrono::system_clock::now();
+    for (unsigned iteration = 0; iteration < iterationCount; iteration++)
     {
-        dynamicGraph.applyNextOperation();
-
-        if (dynamicGraph.lastOpWasArcAddition())
+        while (graph->getSize() < 1)
         {
-            for (size_t vertexIndexOffset = 1; vertexIndexOffset < 3; vertexIndexOffset++)
-            {
-                const Vertex *const currentVertex = graph->vertexAt(graph->getSize() - vertexIndexOffset);
-                if (currentVertex->getName() == targetVertexName)
-                {
-                    vertex = currentVertex;
-                }
-            }
+            dynamicGraph.applyNextOperation();
+            operationIndex++;
         }
+        const auto source = graph->vertexAt(0);
+        simpleES.setSource(source);
+        std::cout << "Algorithm is perpared: " << simpleES.prepare() << std::endl;
+
+        while (dynamicGraph.applyNextOperation())
+            ;
+        dynamicGraph.resetToBigBang();
     }
-
-    const auto path = simpleES.queryPath(vertex);
-
-    std::cout << "after operation " << finalOperationIndex << "(" << getLastOperationType(dynamicGraph) << "): ";
-    std::cout << "is vertex " << targetVertexName << "(id=" << vertex->getName() << ") reachable? " << simpleES.query(vertex) << ", path length: " << path.size() << std::endl;
-
+    const auto timeAfter = std::chrono::system_clock::now();
     simpleES.unsetGraph();
+
+    std::cout << "average duration: " << std::chrono::duration_cast<std::chrono::milliseconds>(timeAfter - timeBefore).count() / iterationCount << "ms" << std::endl;
 
     return 0;
 }
