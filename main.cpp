@@ -1,4 +1,4 @@
-#include "algorithm.reachability.ss.es/simpleestree.h"
+#include "algorithm.reachability.ss.es/simpleestree_selectrandom.h"
 #include "graph.incidencelist/incidencelistgraph.h"
 #include "graph.incidencelist/incidencelistvertex.h"
 #include "io/konectnetworkreader.h"
@@ -107,8 +107,8 @@ int main()
     std::cout << std::boolalpha;
 
     constexpr unsigned iterationCount = 1;
-    SimpleESTree<false, ParentSelectStrategy::randomOptimal> simpleES;
-    simpleES.setGraph(graph);
+    SimpleESTreeSelectRandom<false> algorithm;
+    algorithm.setGraph(graph);
 
     std::map<OperationType, OperationStatistics> operationDurations;
 
@@ -121,8 +121,8 @@ int main()
             applyNextOperationAndMeasure(dynamicGraph, operationDurations);
         }
         const auto source = graph->vertexAt(0);
-        simpleES.setSource(source);
-        std::cout << "Algorithm is perpared: " << simpleES.prepare() << std::endl;
+        algorithm.setSource(source);
+        std::cout << "Algorithm is perpared: " << algorithm.prepare() << std::endl;
 
         while (applyNextOperationAndMeasure(dynamicGraph, operationDurations))
             ;
@@ -135,7 +135,7 @@ int main()
         << statistics.getAverageDuration().count() << "ns" << std::endl;
     }
 
-    simpleES.unsetGraph();
+    algorithm.unsetGraph();
 
     munlockall();
 
