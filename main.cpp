@@ -10,32 +10,48 @@
 #include <algorithm>
 #include <string>
 #include <chrono>
+#include <vector>
+#include <map>
+#include <sys/mman.h>
 
 using namespace Algora;
 
 namespace
 {
-    std::string getLastOperationType(const DynamicDiGraph &dynamicGraph)
+    enum class OperationType
+    {
+        arcAddition,
+        arcRemoval,
+        vertexAddition,
+        vertexRemoval,
+        noOperation,
+    };
+    const std::map<OperationType, std::string> operationTypeNames{{OperationType::arcAddition, "arcAddition"},
+                                                                  {OperationType::arcRemoval, "arcRemoval"},
+                                                                  {OperationType::vertexAddition, "vertexAddition"},
+                                                                  {OperationType::vertexRemoval, "vertexRemoval"}};
+
+    OperationType getLastOperationType(const DynamicDiGraph &dynamicGraph)
     {
         if (dynamicGraph.lastOpWasVertexAddition())
         {
-            return "Vertex Addition";
+            return OperationType::vertexAddition;
         }
         else if (dynamicGraph.lastOpWasVertexRemoval())
         {
-            return "Vertex Removal";
+            return OperationType::vertexRemoval;
         }
         else if (dynamicGraph.lastOpWasArcAddition())
         {
-            return "Arc Addition";
+            return OperationType::arcAddition;
         }
         else if (dynamicGraph.lastOpWasArcRemoval())
         {
-            return "Arc Removal";
+            return OperationType::arcRemoval;
         }
         else
         {
-            return "No Operation";
+            return OperationType::noOperation;
         }
     }
 
@@ -48,41 +64,80 @@ namespace
         graphReader.provideDynamicDiGraph(&dynamicGraph);
         return dynamicGraph;
     }
+
+    class OperationStatistics
+    {
+    public:
+        void addOccurnece(const std::chrono::nanoseconds &duration)
+        {
+            nOccurences++;
+            timeSpent += duration;
+        }
+        std::chrono::nanoseconds getAverageDuration() const
+        {
+            return timeSpent / nOccurences;
+        }
+
+    private:
+        std::chrono::nanoseconds timeSpent{0};
+        long long unsigned nOccurences = 0;
+    };
+
+    bool applyNextOperationAndMeasure(DynamicDiGraph &dynamicGraph, std::map<OperationType, OperationStatistics> &operationDurations)
+    {
+        const auto timeBeforeOperation = std::chrono::high_resolution_clock::now();
+        const bool operationsLeft = dynamicGraph.applyNextOperation();
+        const auto timeAfterOperation = std::chrono::high_resolution_clock::now();
+
+        const std::chrono::nanoseconds duration = timeAfterOperation - timeBeforeOperation;
+        const auto lastOperationType = getLastOperationType(dynamicGraph);
+        operationDurations[lastOperationType].addOccurnece(duration);
+
+        return operationsLeft;
+    }
 }
 
 int main()
 {
-    SimpleESTree<false, ParentSelectStrategy::firstOptimal> simpleES;
+    mlockall(MCL_CURRENT | MCL_FUTURE);
 
-    DynamicDiGraph dynamicGraph = readKroneckerGraph("graphs/gnutella-25");
+    DynamicDiGraph dynamicGraph = readKroneckerGraph("graphs/konect/out.link-dynamic-dewiki");
     const auto graph = dynamicGraph.getDiGraph();
-    simpleES.setGraph(graph);
-    size_t operationIndex = 0;
 
     std::cout << std::boolalpha;
 
-    constexpr unsigned iterationCount = 100;
+    constexpr unsigned iterationCount = 1;
+    SimpleESTree<false, ParentSelectStrategy::randomOptimal> simpleES;
+    simpleES.setGraph(graph);
 
-    const auto timeBefore = std::chrono::system_clock::now();
+    std::map<OperationType, OperationStatistics> operationDurations;
+
+
     for (unsigned iteration = 0; iteration < iterationCount; iteration++)
     {
+        
         while (graph->getSize() < 1)
         {
-            dynamicGraph.applyNextOperation();
-            operationIndex++;
+            applyNextOperationAndMeasure(dynamicGraph, operationDurations);
         }
         const auto source = graph->vertexAt(0);
         simpleES.setSource(source);
         std::cout << "Algorithm is perpared: " << simpleES.prepare() << std::endl;
 
-        while (dynamicGraph.applyNextOperation())
+        while (applyNextOperationAndMeasure(dynamicGraph, operationDurations))
             ;
         dynamicGraph.resetToBigBang();
     }
-    const auto timeAfter = std::chrono::system_clock::now();
+
+    for (const auto &[operationType, statistics] : operationDurations)
+    {
+        std::cout << "average duration of operation \"" << operationTypeNames.at(operationType) << "\": " 
+        << statistics.getAverageDuration().count() << "ns" << std::endl;
+    }
+
     simpleES.unsetGraph();
 
-    std::cout << "average duration: " << std::chrono::duration_cast<std::chrono::milliseconds>(timeAfter - timeBefore).count() / iterationCount << "ms" << std::endl;
+    munlockall();
 
     return 0;
 }
