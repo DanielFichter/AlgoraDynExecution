@@ -1,8 +1,6 @@
 #pragma once
 
 #include "algorithm.reachability.ss/dynamicsinglesourcereachabilityalgorithm.h"
-#include "algorithm.reachability.ss.es/simpleestree.h"
-#include "algorithm.reachability.ss.es/simpleestree_selectrandom.h"
 
 #include <stdexcept>
 #include <memory>
@@ -12,10 +10,12 @@
 enum class AlgorithmType
 {
     SimpleESTree,
-    SimpleESTreeSelectRandom
+    SimpleESTreeSelectRandom,
+    SimpleESTreeMultipleTreeArcs
 };
 
 const std::map<AlgorithmType, std::string> AlgorithmTypeNames{{AlgorithmType::SimpleESTree, "SimpleESTree"},
-                                                        {AlgorithmType::SimpleESTreeSelectRandom, "SimpleESTreeSelectRandom"}};
+                                                              {AlgorithmType::SimpleESTreeSelectRandom, "SimpleESTreeSelectRandom"},
+                                                              {AlgorithmType::SimpleESTreeMultipleTreeArcs, "SimpleESTreeMultipleTreeArcs"}};
 
 std::unique_ptr<Algora::DynamicSingleSourceReachabilityAlgorithm> instantiate(AlgorithmType type);
