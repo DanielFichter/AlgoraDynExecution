@@ -28,7 +28,7 @@ namespace
         }
         else if (optionName == "graph")
         {
-            settings.graphPath = "graphs/" + optionValueString;
+            settings.graphPath = optionValueString;
         }
         else if (optionName == "iterations")
         {
@@ -88,6 +88,6 @@ void CLI::printStartInfo() const
 {
     std::cout << "running " << AlgorithmTypeNames.at(settings.algorithmType) << " on graph " << settings.graphPath << " "
     << settings.iterationCount << " time" << (settings.iterationCount > 1 ? "s" : "")
-    << (settings.preventPaging ? "while preventing paging to swap area" : "")
+    << (settings.preventPaging ? ", while preventing paging to swap area" : "")
     << std::endl;
 }
