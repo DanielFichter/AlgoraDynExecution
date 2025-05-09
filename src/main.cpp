@@ -6,10 +6,9 @@
 #include "algorithm.reachability.ss/staticbfsssreachalgorithm.h"
 
 #include "operationstatistics.hpp"
-#include "operationtype.hpp"
 #include "cli.hpp"
 #include "io.hpp"
-#include "timemeasurement.hpp"
+#include "measureperformance.hpp"
 
 #include <iostream>
 #include <algorithm>
@@ -20,7 +19,7 @@
 using namespace Algora;
 using namespace std::string_literals;
 
-int main(int argc, char * argv[])
+int main(int argc, char *argv[])
 {
     std::vector<std::string> input{argv + 1, argv + argc};
     CLI cli;
@@ -39,30 +38,7 @@ int main(int argc, char * argv[])
     const auto pAlgorithm = instantiate(settings.algorithmType);
     pAlgorithm->setGraph(graph);
 
-    std::map<OperationType, OperationStatistics> operationDurations;
-
-
-    for (unsigned iteration = 0; iteration < settings.iterationCount; iteration++)
-    {
-        
-        while (graph->getSize() < 1)
-        {
-            applyNextOperationAndMeasure(dynamicGraph, operationDurations);
-        }
-        const auto source = graph->vertexAt(0);
-        pAlgorithm->setSource(source);
-        std::cout << "Algorithm is perpared: " << pAlgorithm->prepare() << std::endl;
-
-        while (applyNextOperationAndMeasure(dynamicGraph, operationDurations))
-            ;
-        dynamicGraph.resetToBigBang();
-    }
-
-    for (const auto &[operationType, statistics] : operationDurations)
-    {
-        std::cout << "average duration of operation \"" << operationTypeNames.at(operationType) << "\": " 
-        << statistics.getAverageDuration().count() << "ns" << std::endl;
-    }
+    measurePerformance(settings.iterationCount, graph, dynamicGraph, pAlgorithm);
 
     pAlgorithm->unsetGraph();
 

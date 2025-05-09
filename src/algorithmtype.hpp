@@ -18,4 +18,4 @@ const std::map<AlgorithmType, std::string> AlgorithmTypeNames{{AlgorithmType::Si
                                                               {AlgorithmType::SimpleESTreeSelectRandom, "SimpleESTreeSelectRandom"},
                                                               {AlgorithmType::SimpleESTreeMultipleTreeArcs, "SimpleESTreeMultipleTreeArcs"}};
 
-std::unique_ptr<Algora::DynamicSingleSourceReachabilityAlgorithm> instantiate(AlgorithmType type);
+std::shared_ptr<Algora::DynamicSingleSourceReachabilityAlgorithm> instantiate(AlgorithmType type);
