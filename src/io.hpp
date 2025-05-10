@@ -1,6 +1,7 @@
 #pragma once
 
 #include "graph.dyn/dynamicdigraph.h"
+#include "io/konectnetworkreader.h"
 
 #include <filesystem>
 #include <fstream>

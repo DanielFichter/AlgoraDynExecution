@@ -1,11 +1,11 @@
 #include "measureperformance.hpp"
-#include "algorithm.reachability.ss/dynamicsinglesourcereachabilityalgorithm.h"
-#include "graph.dyn/dynamicdigraph.h"
-#include "graph.incidencelist/incidencelistvertex.h"
-
-
 #include "operationtype.hpp"
 #include "operationstatistics.hpp"
+
+#include "algorithm.reachability.ss/dynamicsinglesourcereachabilityalgorithm.h"
+#include "graph.dyn/dynamicdigraph.h"
+#include "graph.dyn/dynamicdigraph.h"
+#include "graph.incidencelist/incidencelistvertex.h"
 
 #include <map>
 #include <iostream>

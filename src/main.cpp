@@ -1,14 +1,15 @@
-#include "algorithm.reachability.ss.es/simpleestree_selectrandom.h"
-#include "graph.incidencelist/incidencelistgraph.h"
-#include "graph.incidencelist/incidencelistvertex.h"
-#include "io/konectnetworkreader.h"
-#include "graph.dyn/dynamicdigraph.h"
-#include "algorithm.reachability.ss/staticbfsssreachalgorithm.h"
-
 #include "operationstatistics.hpp"
 #include "cli.hpp"
 #include "io.hpp"
 #include "measureperformance.hpp"
+#include "executionmode.hpp"
+#include "testcorrectness.hpp"
+
+#include "algorithm.reachability.ss.es/simpleestree_selectrandom.h"
+#include "graph.incidencelist/incidencelistgraph.h"
+#include "graph.incidencelist/incidencelistvertex.h"
+#include "graph.dyn/dynamicdigraph.h"
+#include "algorithm.reachability.ss/staticbfsssreachalgorithm.h"
 
 #include <iostream>
 #include <algorithm>
@@ -38,7 +39,18 @@ int main(int argc, char *argv[])
     const auto pAlgorithm = instantiate(settings.algorithmType);
     pAlgorithm->setGraph(graph);
 
-    measurePerformance(settings.iterationCount, graph, dynamicGraph, pAlgorithm);
+    switch (settings.executionMode)
+    {
+    case ExecutionMode::measurePerformance:
+        measurePerformance(settings.iterationCount, graph, dynamicGraph, pAlgorithm);
+        break;
+    case ExecutionMode::testCorrectness:
+        testCorrectness(graph, dynamicGraph, pAlgorithm);
+        break;
+    default:
+        std::cerr << "invalid execution mode!" << std::endl;
+        break;
+    }
 
     pAlgorithm->unsetGraph();
 

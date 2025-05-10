@@ -51,6 +51,23 @@ namespace
                 throw std::invalid_argument("invalid algorithm \""s + optionValueString + "\"");
             }
         }
+        else if (optionName == "executionMode")
+        {
+            bool validExecutionMode = false;
+            for (const auto& [executionMode, name]: executionModeNames)
+            {
+                if (optionValueString == name)
+                {
+                    settings.executionMode = executionMode;
+                    validExecutionMode = true;
+                    break;
+                }
+            }
+            if (!validExecutionMode)
+            {
+                throw std::invalid_argument("invalid execution mode \""s + optionValueString + "\"");
+            }
+        }
         else
         {
             throw std::invalid_argument("invalid option \"" + optionName + "\"");
@@ -86,7 +103,18 @@ Settings CLI::parseSettings(const std::vector<std::string> &optionInput)
 
 void CLI::printStartInfo() const
 {
-    std::cout << "running " << AlgorithmTypeNames.at(settings.algorithmType) << " on graph " << settings.graphPath << " "
+    switch (settings.executionMode)
+    {
+    case ExecutionMode::measurePerformance:
+        std::cout << "measuring performance for algorithm ";
+        break;
+    case ExecutionMode::testCorrectness:
+        std::cout << "testing algorithm ";
+        break;    
+    default:
+        throw std::logic_error("invalid execution mode!");
+    }
+    std::cout << AlgorithmTypeNames.at(settings.algorithmType) << " on graph " << settings.graphPath << " "
     << settings.iterationCount << " time" << (settings.iterationCount > 1 ? "s" : "")
     << (settings.preventPaging ? ", while preventing paging to swap area" : "")
     << std::endl;
