@@ -26,7 +26,7 @@ namespace
     }
 }
 
-void measurePerformance(const unsigned iterationCount, const Algora::IncidenceListGraph *const graph, Algora::DynamicDiGraph &dynamicGraph, const std::shared_ptr<Algora::DynamicSingleSourceReachabilityAlgorithm> &pAlgorithm)
+void measurePerformance(const unsigned iterationCount, const Algora::IncidenceListGraph *const graph, Algora::DynamicDiGraph &dynamicGraph, Algora::DynamicSingleSourceReachabilityAlgorithm *const pAlgorithm)
 {
     std::map<OperationType, OperationStatistics> operationDurations;
     for (unsigned iteration = 0; iteration < iterationCount; iteration++)

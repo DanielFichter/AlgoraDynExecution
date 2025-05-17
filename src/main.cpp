@@ -42,10 +42,10 @@ int main(int argc, char *argv[])
     switch (settings.executionMode)
     {
     case ExecutionMode::measurePerformance:
-        measurePerformance(settings.iterationCount, graph, dynamicGraph, pAlgorithm);
+        measurePerformance(settings.iterationCount, graph, dynamicGraph, pAlgorithm.get());
         break;
     case ExecutionMode::testCorrectness:
-        testCorrectness(graph, dynamicGraph, pAlgorithm);
+        testCorrectness(graph, dynamicGraph, pAlgorithm.get());
         break;
     default:
         std::cerr << "invalid execution mode!" << std::endl;

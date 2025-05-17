@@ -9,4 +9,4 @@ namespace Algora
     class DynamicSingleSourceReachabilityAlgorithm;
 }
 
-void testCorrectness(Algora::IncidenceListGraph* const graph, Algora::DynamicDiGraph& dynamicGraph, const std::shared_ptr<Algora::DynamicSingleSourceReachabilityAlgorithm> &pAlgorithm);
+void testCorrectness(Algora::IncidenceListGraph *const graph, Algora::DynamicDiGraph &dynamicGraph, Algora::DynamicSingleSourceReachabilityAlgorithm *const pAlgorithm);

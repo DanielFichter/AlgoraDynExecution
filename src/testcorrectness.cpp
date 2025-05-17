@@ -12,7 +12,7 @@
 using namespace Algora;
 using namespace std::string_literals;
 
-void testCorrectness(Algora::IncidenceListGraph *const graph, Algora::DynamicDiGraph &dynamicGraph, const std::shared_ptr<Algora::DynamicSingleSourceReachabilityAlgorithm> &pAlgorithm)
+void testCorrectness(Algora::IncidenceListGraph *const graph, Algora::DynamicDiGraph &dynamicGraph, Algora::DynamicSingleSourceReachabilityAlgorithm *const pAlgorithm)
 {
     SimpleESTree correctAlgorithm;
     correctAlgorithm.setGraph(graph);
@@ -43,5 +43,4 @@ void testCorrectness(Algora::IncidenceListGraph *const graph, Algora::DynamicDiG
     correctAlgorithm.unsetGraph();
 
     std::cout << "algorithm executed without errors" << std::endl;
-
 }
