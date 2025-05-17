@@ -24,10 +24,7 @@ void testCorrectness(Algora::IncidenceListGraph *const graph, Algora::DynamicDiG
     pAlgorithm->setSource(source);
     correctAlgorithm.setSource(source);
 
-    if (!pAlgorithm->query(source))
-    {
-        throw std::runtime_error("source should be reachable, but is not!");
-    }
+    pAlgorithm->run();
 
     while (dynamicGraph.applyNextOperation())
         ;

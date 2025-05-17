@@ -38,6 +38,7 @@ void measurePerformance(const unsigned iterationCount, const Algora::IncidenceLi
         }
         auto source = graph->vertexAt(0);
         pAlgorithm->setSource(source);
+        pAlgorithm->run();
 
         while (applyNextOperationAndMeasure(dynamicGraph, operationDurations))
             ;
