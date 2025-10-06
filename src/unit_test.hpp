@@ -17,7 +17,6 @@ bool unit_test(AlgorithmType algorithmType) {
   dyDiGraph.addArc(1, 2, 0);
   dyDiGraph.addArc(1, 3, 0);
   dyDiGraph.addArc(3, 4, 0);
-  dyDiGraph.addArc(3, 4, 0);
   dyDiGraph.addArc(4, 3, 0);
   dyDiGraph.addArc(5, 6, 0);
   dyDiGraph.addArc(5, 7, 0);

@@ -8,6 +8,7 @@
 #include <string>
 
 enum class AlgorithmType {
+  ESTree,
   SimpleESTree,
   SimpleESTreeSelectRandom,
   SimpleESTreeReservoirSampling,
@@ -20,7 +21,8 @@ const std::map<AlgorithmType, std::string> AlgorithmTypeNames{
     {AlgorithmType::SimpleESTreeReservoirSampling,
      "SimpleESTreeReservoirSampling"},
     {AlgorithmType::SimpleESTreeMultipleTreeArcs,
-     "SimpleESTreeMultipleTreeArcs"}};
+     "SimpleESTreeMultipleTreeArcs"},
+    {AlgorithmType::ESTree, "ESTree"}};
 
 std::unique_ptr<Algora::DynamicSingleSourceReachabilityAlgorithm>
 instantiate(AlgorithmType type);
