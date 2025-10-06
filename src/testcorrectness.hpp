@@ -1,12 +1,10 @@
 #pragma once
 
-#include <memory>
+#include "algorithmexecuter.hpp"
+#include "algorithmtype.hpp"
 
-namespace Algora
-{
-    class IncidenceListGraph;
-    class DynamicDiGraph;
-    class DynamicSingleSourceReachabilityAlgorithm;
-}
-
-void testCorrectness(Algora::IncidenceListGraph *const graph, Algora::DynamicDiGraph &dynamicGraph, Algora::DynamicSingleSourceReachabilityAlgorithm *const pAlgorithm);
+class CorrectnessTester : public AlgorithmExecuter {
+public:
+  CorrectnessTester(const std::string &graphName, AlgorithmType);
+  void execute() override;
+};

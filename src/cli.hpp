@@ -5,14 +5,13 @@
 #include <string>
 #include <vector>
 
-class CLI
-{
+class CLI {
 
 public:
-    CLI();
-    Settings parseSettings(const std::vector<std::string>& optionInput);
-    void printStartInfo() const;
+  CLI();
+  Settings parseSettings(const std::vector<std::string> &optionInput);
+  void printStartInfo() const;
 
 private:
-    Settings settings;
+  Settings settings;
 };

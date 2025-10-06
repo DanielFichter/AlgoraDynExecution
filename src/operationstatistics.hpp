@@ -2,21 +2,17 @@
 
 #include <chrono>
 
-
-class OperationStatistics
-{
+class OperationStatistics {
 public:
-    void addOccurnece(const std::chrono::nanoseconds &duration)
-    {
-        nOccurences++;
-        timeSpent += duration;
-    }
-    std::chrono::nanoseconds getAverageDuration() const
-    {
-        return timeSpent / nOccurences;
-    }
+  void addOccurnece(const std::chrono::nanoseconds &duration) {
+    nOccurences++;
+    timeSpent += duration;
+  }
+  std::chrono::nanoseconds getAverageDuration() const {
+    return timeSpent / nOccurences;
+  }
 
 private:
-    std::chrono::nanoseconds timeSpent{0};
-    long long unsigned nOccurences = 0;
+  std::chrono::nanoseconds timeSpent{0};
+  long long unsigned nOccurences = 0;
 };

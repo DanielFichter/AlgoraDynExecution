@@ -2,3 +2,5 @@ build
 .vscode
 CMakeUserPresets.json
 graphs
+.cache
+gmon.out

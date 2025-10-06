@@ -1,12 +1,14 @@
 #pragma once
 
-#include <memory>
+#include "algorithmexecuter.hpp"
+#include "algorithmtype.hpp"
 
-namespace Algora
-{
-    class IncidenceListGraph;
-    class DynamicDiGraph;
-    class DynamicSingleSourceReachabilityAlgorithm;
-}
+class PerformanceMeasurer : public AlgorithmExecuter {
+public:
+  PerformanceMeasurer(const std::string &graphName, AlgorithmType,
+                      unsigned iterationCount);
+  void execute() override;
 
-void measurePerformance(const unsigned iterationCount, const Algora::IncidenceListGraph *const graph, Algora::DynamicDiGraph &dynamicGraph, Algora::DynamicSingleSourceReachabilityAlgorithm *const pAlgorithm);
+private:
+  unsigned iterationCount;
+};

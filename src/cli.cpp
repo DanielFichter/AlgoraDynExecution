@@ -1,4 +1,5 @@
 #include "cli.hpp"
+#include "executionmode.hpp"
 
 #include <sstream>
 #include <string>
@@ -110,7 +111,10 @@ void CLI::printStartInfo() const
         break;
     case ExecutionMode::testCorrectness:
         std::cout << "testing algorithm ";
-        break;    
+        break;
+    case ExecutionMode::unitTest:
+        std::cout << "unit testing";
+        break;
     default:
         throw std::logic_error("invalid execution mode!");
     }
