@@ -3,13 +3,27 @@
 #include "algorithmtype.hpp"
 #include "operationstatistics.hpp"
 #include "operationtype.hpp"
+#include "settings.hpp"
 
 #include "graph.dyn/dynamicdigraph.h"
 #include "graph.incidencelist/incidencelistvertex.h"
 
+#include <nlohmann/json.hpp>
+
 #include <cstddef>
 #include <iostream>
 #include <map>
+
+using json = nlohmann::json;
+
+void measurePerformance(const Settings &settings) {
+  json outerJson;
+  PerformanceMeasurer performanceMeasurer{
+      settings.graphPath, settings.algorithmType, settings.iterationCount, outerJson};
+  performanceMeasurer.execute();
+
+  std::cout << outerJson.dump();
+}
 
 namespace {
 bool applyNextOperationAndMeasure(
@@ -30,9 +44,13 @@ bool applyNextOperationAndMeasure(
 
 PerformanceMeasurer::PerformanceMeasurer(const std::string &graphName,
                                          AlgorithmType algorithmType,
-                                         unsigned iterationCount)
+                                         unsigned iterationCount,
+                                         json& outerJson)
     : AlgorithmExecuter(graphName, algorithmType),
-      iterationCount(iterationCount) {}
+      iterationCount(iterationCount),
+      outerJson(outerJson),
+      algorithmType(algorithmType)
+      {}
 
 void PerformanceMeasurer::execute() {
   std::map<OperationType, OperationStatistics> operationDurations;
@@ -55,7 +73,8 @@ void PerformanceMeasurer::execute() {
 
     while (applyNextOperationAndMeasure(dynamicGraph, operationDurations)) {
       if (operationIndex % partOperations == 0 && operationIndex > 0) {
-        std::cout <<  static_cast<double>(operationIndex) / static_cast<double>(nOperations) * 100.0
+        std::cout << static_cast<double>(operationIndex) /
+                         static_cast<double>(nOperations) * 100.0
                   << " percent of operations executed" << std::endl;
       }
       operationIndex++;
@@ -64,12 +83,20 @@ void PerformanceMeasurer::execute() {
     dynamicGraph.resetToBigBang();
   }
 
+  json output;
   for (const auto &[operationType, statistics] : operationDurations) {
     std::cout << "average duration of operation \""
               << operationTypeNames.at(operationType)
               << "\": " << statistics.getAverageDuration().count() << "ns"
               << std::endl;
+
+    output[operationTypeNames.at(operationType)] =
+        statistics.getAverageDuration().count();
   }
+
+  const std::string algorithmTypeName = AlgorithmTypeNames.at(algorithmType);
+
+  outerJson[algorithmTypeName] = output;
 
   cleanup();
 }

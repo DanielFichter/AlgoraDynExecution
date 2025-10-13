@@ -15,12 +15,6 @@
 using namespace Algora;
 using namespace std::string_literals;
 
-void measurePerformance(const Settings &settings) {
-  PerformanceMeasurer performanceMeasurer{
-      settings.graphPath, settings.algorithmType, settings.iterationCount};
-  performanceMeasurer.execute();
-}
-
 void testCorrectness(const Settings &settings) {
   CorrectnessTester correctnessTester{settings.graphPath,
                                       settings.algorithmType};
