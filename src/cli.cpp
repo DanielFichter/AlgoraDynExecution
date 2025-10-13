@@ -28,7 +28,7 @@ namespace
         }
         else if (optionName == "graph")
         {
-            settings.graphPath = optionValueString;
+            settings.graphNames.push_back(optionValueString);
         }
         else if (optionName == "iterations")
         {
@@ -122,8 +122,12 @@ void CLI::printStartInfo() const
     {
         std::cout << AlgorithmTypeNames.at(algoirthmType) << ",";
     }
-    std::cout << "] on graph " << settings.graphPath << " "
-    << settings.iterationCount << " time" << (settings.iterationCount > 1 ? "s" : "")
+    std::cout << "] on graphs [";
+    for (const std::string& graphName: settings.graphNames)
+    {
+        std::cout << graphName << ",";
+    }
+    std::cout << " " << settings.iterationCount << " time" << (settings.iterationCount > 1 ? "s" : "")
     << (settings.preventPaging ? ", while preventing paging to swap area" : "")
     << std::endl;
 }

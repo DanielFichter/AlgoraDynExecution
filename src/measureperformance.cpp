@@ -17,14 +17,19 @@
 using json = nlohmann::json;
 
 void measurePerformance(const Settings &settings) {
-  json outerJson;
-  for (AlgorithmType algorithmType : settings.algorithmTypes) {
+  json overallJson;
 
-    PerformanceMeasurer performanceMeasurer{settings.graphPath, algorithmType,
-                                            settings.iterationCount, outerJson};
-    performanceMeasurer.execute();
+  for (const std::string &graphName : settings.graphNames) {
+    json graphJson;
+    for (AlgorithmType algorithmType : settings.algorithmTypes) {
+
+      PerformanceMeasurer performanceMeasurer{
+          graphName, algorithmType, settings.iterationCount, graphJson};
+      performanceMeasurer.execute();
+    }
+    overallJson[graphName] = graphJson;
   }
-  std::cout << outerJson.dump();
+  std::cout << overallJson.dump();
 }
 
 namespace {

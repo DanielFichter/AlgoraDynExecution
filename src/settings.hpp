@@ -8,7 +8,7 @@
 
 struct Settings {
   bool preventPaging = false;
-  std::string graphPath = "kronecker/csize/answers";
+  std::vector<std::string> graphNames = {};
   unsigned iterationCount = 1;
   std::vector<AlgorithmType> algorithmTypes = {};
   ExecutionMode executionMode = ExecutionMode::measurePerformance;

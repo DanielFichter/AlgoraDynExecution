@@ -15,8 +15,6 @@
 using namespace Algora;
 using namespace std::string_literals;
 
-
-
 int main(int argc, char *argv[]) {
   std::vector<std::string> input{argv + 1, argv + argc};
   CLI cli;

@@ -16,10 +16,14 @@ using namespace Algora;
 using namespace std::string_literals;
 
 void testCorrectness(const Settings &settings) {
-  for (AlgorithmType algorithmType : settings.algorithmTypes) {
 
-    CorrectnessTester correctnessTester{settings.graphPath, algorithmType};
-    correctnessTester.execute();
+  for (const std::string& graphName: settings.graphNames)
+  {
+    for (AlgorithmType algorithmType : settings.algorithmTypes) {
+      
+      CorrectnessTester correctnessTester{graphName, algorithmType};
+      correctnessTester.execute();
+    }
   }
 }
 
