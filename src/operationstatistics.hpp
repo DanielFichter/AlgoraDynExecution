@@ -11,6 +11,11 @@ public:
   std::chrono::nanoseconds getAverageDuration() const {
     return timeSpent / nOccurences;
   }
+  void reset()
+  {
+    timeSpent = std::chrono::nanoseconds{0};
+    nOccurences = 0;
+  }
 
 private:
   std::chrono::nanoseconds timeSpent{0};

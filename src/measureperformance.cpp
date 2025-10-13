@@ -79,6 +79,8 @@ void PerformanceMeasurer::execute() {
   const size_t partOperations = static_cast<size_t>(
       static_cast<double>(nOperations) * progressPercentage);
 
+  json whole_output;
+
   for (unsigned iteration = 0; iteration < iterationCount; iteration++) {
     while (graph->getSize() < 1) {
       applyNextOperationAndMeasure(dynamicGraph, operationDurations);
@@ -97,23 +99,29 @@ void PerformanceMeasurer::execute() {
       operationIndex++;
     }
 
+    json current_output;
+    for (const auto &[operationType, statistics] : operationDurations) {
+      std::cout << "average duration of operation \""
+                << operationTypeNames.at(operationType)
+                << "\": " << statistics.getAverageDuration().count() << "ns"
+                << std::endl;
+
+      current_output[operationTypeNames.at(operationType)] =
+          statistics.getAverageDuration().count();
+    }
+
+    whole_output.push_back(current_output);
+
     dynamicGraph.resetToBigBang();
-  }
-
-  json output;
-  for (const auto &[operationType, statistics] : operationDurations) {
-    std::cout << "average duration of operation \""
-              << operationTypeNames.at(operationType)
-              << "\": " << statistics.getAverageDuration().count() << "ns"
-              << std::endl;
-
-    output[operationTypeNames.at(operationType)] =
-        statistics.getAverageDuration().count();
+    for (auto& [operationType, statistics]: operationDurations)
+    {
+      statistics.reset();
+    }
   }
 
   const std::string algorithmTypeName = AlgorithmTypeNames.at(algorithmType);
 
-  outerJson[algorithmTypeName] = output;
+  outerJson[algorithmTypeName] = whole_output;
 
   cleanup();
 }
