@@ -13,6 +13,8 @@
 #include <cstddef>
 #include <iostream>
 #include <map>
+#include <string>
+#include <fstream>
 
 using json = nlohmann::json;
 
@@ -29,7 +31,17 @@ void measurePerformance(const Settings &settings) {
     }
     overallJson[graphName] = graphJson;
   }
-  std::cout << overallJson.dump();
+
+  std::string output = overallJson.dump(2);
+
+  if (settings.outputPath == "")
+  {
+    std::cout << output;
+  }
+  else {
+    std::ofstream ofs{settings.outputPath};
+    ofs << output;
+  }
 }
 
 namespace {

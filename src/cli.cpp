@@ -68,6 +68,10 @@ namespace
                 throw std::invalid_argument("invalid execution mode \""s + optionValueString + "\"");
             }
         }
+        else if (optionName == "o")
+        {
+            settings.outputPath = optionValueString;
+        }
         else
         {
             throw std::invalid_argument("invalid option \"" + optionName + "\"");

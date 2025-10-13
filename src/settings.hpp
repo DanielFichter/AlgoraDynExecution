@@ -12,4 +12,5 @@ struct Settings {
   unsigned iterationCount = 1;
   std::vector<AlgorithmType> algorithmTypes = {};
   ExecutionMode executionMode = ExecutionMode::measurePerformance;
+  std::string outputPath = "";
 };
