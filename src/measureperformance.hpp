@@ -11,4 +11,5 @@ public:
 
 private:
   unsigned iterationCount;
+  size_t operationIndex = 0;
 };

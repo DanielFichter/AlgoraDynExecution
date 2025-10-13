@@ -7,6 +7,7 @@
 #include "graph.dyn/dynamicdigraph.h"
 #include "graph.incidencelist/incidencelistvertex.h"
 
+#include <cstddef>
 #include <iostream>
 #include <map>
 
@@ -36,6 +37,13 @@ PerformanceMeasurer::PerformanceMeasurer(const std::string &graphName,
 void PerformanceMeasurer::execute() {
   std::map<OperationType, OperationStatistics> operationDurations;
 
+  DynamicDiGraph::DynamicTime maxTime = dynamicGraph.getMaxTime();
+  size_t nOperations = dynamicGraph.countArcAdditions(0, maxTime) +
+                       dynamicGraph.countArcRemovals(0, maxTime);
+  constexpr static double progressPercentage = .01;
+  const size_t partOperations = static_cast<size_t>(
+      static_cast<double>(nOperations) * progressPercentage);
+
   for (unsigned iteration = 0; iteration < iterationCount; iteration++) {
     while (graph->getSize() < 1) {
       applyNextOperationAndMeasure(dynamicGraph, operationDurations);
@@ -45,8 +53,14 @@ void PerformanceMeasurer::execute() {
     pAlgorithm->setSource(source);
     pAlgorithm->run();
 
-    while (applyNextOperationAndMeasure(dynamicGraph, operationDurations))
-      ;
+    while (applyNextOperationAndMeasure(dynamicGraph, operationDurations)) {
+      if (operationIndex % partOperations == 0 && operationIndex > 0) {
+        std::cout <<  static_cast<double>(operationIndex) / static_cast<double>(nOperations) * 100.0
+                  << " percent of operations executed" << std::endl;
+      }
+      operationIndex++;
+    }
+
     dynamicGraph.resetToBigBang();
   }
 

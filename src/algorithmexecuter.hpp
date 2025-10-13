@@ -7,6 +7,7 @@
 #include <graph.incidencelist/incidencelistgraph.h>
 
 #include <memory>
+#include <iostream>
 
 using namespace Algora;
 using namespace std::string_literals;
@@ -20,17 +21,9 @@ public:
       : dynamicGraph{readKroneckerGraph("graphs/"s + graphName)},
         graph{dynamicGraph.getDiGraph()},
         pAlgorithm{instantiate(algorithmType)} {
+          std::cout << "graph has been read" << std::endl;
     pAlgorithm->setGraph(graph);
   }
-
-  /* AlgorithmExecuter(const std::string& graphName, AlgorithmType
-  algorithmType) { const std::string graphPath = "graphs/"s + graphName;
-    dynamicGraph = readKroneckerGraph(graphPath);
-    graph = dynamicGraph.getDiGraph();
-
-    pAlgorithm = instantiate(algorithmType);
-    pAlgorithm->setGraph(graph);
-  } */
 
   virtual ~AlgorithmExecuter() = default;
 
