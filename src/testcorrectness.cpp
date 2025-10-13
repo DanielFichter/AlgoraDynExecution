@@ -1,4 +1,5 @@
 #include "testcorrectness.hpp"
+#include "settings.hpp"
 
 #include "algorithm.reachability.ss.es/simpleestree.h"
 #include "algorithm.reachability.ss/dynamicsinglesourcereachabilityalgorithm.h"
@@ -13,6 +14,14 @@
 
 using namespace Algora;
 using namespace std::string_literals;
+
+void testCorrectness(const Settings &settings) {
+  for (AlgorithmType algorithmType : settings.algorithmTypes) {
+
+    CorrectnessTester correctnessTester{settings.graphPath, algorithmType};
+    correctnessTester.execute();
+  }
+}
 
 CorrectnessTester::CorrectnessTester(const std::string &graphName,
                                      AlgorithmType algorithmType)

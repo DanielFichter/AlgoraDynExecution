@@ -1,10 +1,9 @@
 #include "cli.hpp"
+#include "algorithmtype.hpp"
 #include "executionmode.hpp"
 
-#include <sstream>
 #include <string>
 #include <stdexcept>
-#include <filesystem>
 #include <iostream>
 
 using namespace std::string_literals;
@@ -42,7 +41,7 @@ namespace
             {
                 if (optionValueString == name)
                 {
-                    settings.algorithmType = algorithmType;
+                    settings.algorithmTypes.push_back({algorithmType});
                     validAlgorithmType = true;
                     break;
                 }
@@ -107,10 +106,10 @@ void CLI::printStartInfo() const
     switch (settings.executionMode)
     {
     case ExecutionMode::measurePerformance:
-        std::cout << "measuring performance for algorithm ";
+        std::cout << "measuring performance for ";
         break;
     case ExecutionMode::testCorrectness:
-        std::cout << "testing algorithm ";
+        std::cout << "testing";
         break;
     case ExecutionMode::unitTest:
         std::cout << "unit testing";
@@ -118,7 +117,12 @@ void CLI::printStartInfo() const
     default:
         throw std::logic_error("invalid execution mode!");
     }
-    std::cout << AlgorithmTypeNames.at(settings.algorithmType) << " on graph " << settings.graphPath << " "
+    std::cout << "algorithms [";
+    for (const AlgorithmType algoirthmType : settings.algorithmTypes)
+    {
+        std::cout << AlgorithmTypeNames.at(algoirthmType) << ",";
+    }
+    std::cout << "] on graph " << settings.graphPath << " "
     << settings.iterationCount << " time" << (settings.iterationCount > 1 ? "s" : "")
     << (settings.preventPaging ? ", while preventing paging to swap area" : "")
     << std::endl;

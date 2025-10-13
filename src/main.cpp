@@ -15,11 +15,7 @@
 using namespace Algora;
 using namespace std::string_literals;
 
-void testCorrectness(const Settings &settings) {
-  CorrectnessTester correctnessTester{settings.graphPath,
-                                      settings.algorithmType};
-  correctnessTester.execute();
-}
+
 
 int main(int argc, char *argv[]) {
   std::vector<std::string> input{argv + 1, argv + argc};
@@ -39,7 +35,7 @@ int main(int argc, char *argv[]) {
     testCorrectness(settings);
     break;
   case ExecutionMode::unitTest:
-    unit_test(settings.algorithmType);
+    unit_test(settings.algorithmTypes);
     break;
   default:
     std::cerr << "invalid execution mode!" << std::endl;
