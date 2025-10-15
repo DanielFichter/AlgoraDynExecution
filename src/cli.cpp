@@ -131,7 +131,7 @@ void CLI::printStartInfo() const
     {
         std::cout << graphName << ",";
     }
-    std::cout << " " << settings.iterationCount << " time" << (settings.iterationCount > 1 ? "s" : "")
+    std::cout << "] " << settings.iterationCount << " time" << (settings.iterationCount > 1 ? "s" : "")
     << (settings.preventPaging ? ", while preventing paging to swap area" : "")
     << std::endl;
 }
