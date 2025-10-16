@@ -11,34 +11,34 @@
 #include <nlohmann/json.hpp>
 
 #include <cstddef>
+#include <fstream>
 #include <iostream>
 #include <map>
 #include <string>
-#include <fstream>
 
 using json = nlohmann::json;
 
 void measurePerformance(const Settings &settings) {
   json overallJson;
 
-  for (const std::string &graphName : settings.graphNames) {
-    json graphJson;
-    for (AlgorithmType algorithmType : settings.algorithmTypes) {
+  for (unsigned iteration = 0; iteration < settings.iterationCount;
+       iteration++) {
+    for (const std::string &graphName : settings.graphNames) {
+      json graphJson;
+      for (AlgorithmType algorithmType : settings.algorithmTypes) {
 
-      PerformanceMeasurer performanceMeasurer{
-          graphName, algorithmType, settings.iterationCount, graphJson};
-      performanceMeasurer.execute();
+        PerformanceMeasurer performanceMeasurer{
+            graphName, algorithmType, settings.iterationCount, overallJson[graphName]};
+        performanceMeasurer.execute();
+      }
     }
-    overallJson[graphName] = graphJson;
   }
 
   std::string output = overallJson.dump(2);
 
-  if (settings.outputPath == "")
-  {
+  if (settings.outputPath.empty()) {
     std::cout << output;
-  }
-  else {
+  } else {
     std::ofstream ofs{settings.outputPath};
     ofs << output;
   }
@@ -79,49 +79,44 @@ void PerformanceMeasurer::execute() {
   const size_t partOperations = static_cast<size_t>(
       static_cast<double>(nOperations) * progressPercentage);
 
-  json whole_output;
+  json current_output;
 
-  for (unsigned iteration = 0; iteration < iterationCount; iteration++) {
-    while (graph->getSize() < 1) {
-      applyNextOperationAndMeasure(dynamicGraph, operationDurations);
+  while (graph->getSize() < 1) {
+    applyNextOperationAndMeasure(dynamicGraph, operationDurations);
+  }
+
+  auto source = graph->vertexAt(0);
+  pAlgorithm->setSource(source);
+  pAlgorithm->run();
+
+  // execute all updates on the graph and measure the update durations
+  while (applyNextOperationAndMeasure(dynamicGraph, operationDurations)) {
+    if (operationIndex % partOperations == 0 && operationIndex > 0) {
+      std::cout << static_cast<double>(operationIndex) /
+                       static_cast<double>(nOperations) * 100.0
+                << " percent of operations executed" << std::endl;
     }
+    operationIndex++;
+  }
 
-    auto source = graph->vertexAt(0);
-    pAlgorithm->setSource(source);
-    pAlgorithm->run();
+  for (const auto &[operationType, statistics] : operationDurations) {
+    std::cout << "average duration of operation \""
+              << operationTypeNames.at(operationType)
+              << "\": " << statistics.getAverageDuration().count() << "ns"
+              << std::endl;
 
-    while (applyNextOperationAndMeasure(dynamicGraph, operationDurations)) {
-      if (operationIndex % partOperations == 0 && operationIndex > 0) {
-        std::cout << static_cast<double>(operationIndex) /
-                         static_cast<double>(nOperations) * 100.0
-                  << " percent of operations executed" << std::endl;
-      }
-      operationIndex++;
-    }
+    current_output[operationTypeNames.at(operationType)] =
+        statistics.getAverageDuration().count();
+  }
 
-    json current_output;
-    for (const auto &[operationType, statistics] : operationDurations) {
-      std::cout << "average duration of operation \""
-                << operationTypeNames.at(operationType)
-                << "\": " << statistics.getAverageDuration().count() << "ns"
-                << std::endl;
-
-      current_output[operationTypeNames.at(operationType)] =
-          statistics.getAverageDuration().count();
-    }
-
-    whole_output.push_back(current_output);
-
-    dynamicGraph.resetToBigBang();
-    for (auto& [operationType, statistics]: operationDurations)
-    {
-      statistics.reset();
-    }
+  dynamicGraph.resetToBigBang();
+  for (auto &[operationType, statistics] : operationDurations) {
+    statistics.reset();
   }
 
   const std::string algorithmTypeName = AlgorithmTypeNames.at(algorithmType);
 
-  outerJson[algorithmTypeName] = whole_output;
+  outerJson[algorithmTypeName].push_back(current_output);
 
   cleanup();
 }
