@@ -5,6 +5,7 @@
 #include <algorithm.reachability.ss/dynamicsinglesourcereachabilityalgorithm.h>
 #include <graph.dyn/dynamicdigraph.h>
 #include <graph.incidencelist/incidencelistgraph.h>
+#include <algorithm.reachability.ss.es/simpleestree_timestamps.h>
 
 #include <memory>
 #include <iostream>
@@ -23,6 +24,11 @@ public:
         pAlgorithm{instantiate(algorithmType)} {
           std::cout << "graph has been read" << std::endl;
     pAlgorithm->setGraph(graph);
+    if (algorithmType == AlgorithmType::SimpleESTreeTimeStamps)
+    {
+      auto pAlgorithmTimeStamps = dynamic_cast<SimpleESTreeTimeStamps<false, true>*>(pAlgorithm.get());
+      pAlgorithmTimeStamps->setDyDiGraph(&dynamicGraph);
+    }
   }
 
   virtual ~AlgorithmExecuter() = default;
