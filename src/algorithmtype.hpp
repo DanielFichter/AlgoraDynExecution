@@ -4,7 +4,6 @@
 
 #include <map>
 #include <memory>
-#include <stdexcept>
 #include <string>
 
 enum class AlgorithmType {
@@ -12,7 +11,8 @@ enum class AlgorithmType {
   SimpleESTree,
   SimpleESTreeSelectRandom,
   SimpleESTreeReservoirSampling,
-  SimpleESTreeMultipleTreeArcs
+  SimpleESTreeMultipleTreeArcs,
+  SimpleESTreeTimeStamps
 };
 
 const std::map<AlgorithmType, std::string> AlgorithmTypeNames{
@@ -22,7 +22,9 @@ const std::map<AlgorithmType, std::string> AlgorithmTypeNames{
      "SimpleESTreeReservoirSampling"},
     {AlgorithmType::SimpleESTreeMultipleTreeArcs,
      "SimpleESTreeMultipleTreeArcs"},
-    {AlgorithmType::ESTree, "ESTree"}};
+    {AlgorithmType::ESTree, "ESTree"},
+    {AlgorithmType::SimpleESTreeTimeStamps, "SimpleESTreeTimeStamps"}
+  };
 
 std::unique_ptr<Algora::DynamicSingleSourceReachabilityAlgorithm>
 instantiate(AlgorithmType type);
