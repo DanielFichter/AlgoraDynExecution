@@ -4,6 +4,7 @@
 #include "graph.dyn/dynamicdigraph.h"
 #include "graph.incidencelist/incidencelistvertex.h"
 
+#include <algorithm.reachability.ss.es/simpleestree_timestamps.h>
 #include <iostream>
 #include <memory>
 
@@ -43,6 +44,11 @@ bool unit_test(AlgorithmType algorithmType) {
 
   IncidenceListGraph *graph = dyDiGraph.getDiGraph();
   pAlgorithm->setGraph(graph);
+  if (algorithmType == AlgorithmType::SimpleESTreeTimeStamps)
+  {
+    auto pAlgorithmTimeStamps = dynamic_cast<SimpleESTreeTimeStamps<false, true>*>(pAlgorithm.get());
+    pAlgorithmTimeStamps->setDyDiGraph(&dyDiGraph);
+  }
 
   dyDiGraph.applyNextDelta();
   auto source = graph->vertexAt(0);
