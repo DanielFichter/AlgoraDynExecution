@@ -6,6 +6,7 @@
 
 #include <algorithm.reachability.ss.es/simpleestree_timestamps.h>
 #include <algorithm.reachability.ss.es/simpleestree_timestamps_fpm.h>
+#include <algorithm.reachability.ss.es/estree-ml_timestamps_fpm.h>
 #include <iostream>
 #include <memory>
 
@@ -53,6 +54,11 @@ bool unit_test(AlgorithmType algorithmType) {
   else if (algorithmType == AlgorithmType::SimpleESTreeTimeStampsFPM)
   {
     auto pAlgorithmTimeStamps = dynamic_cast<SimpleESTreeTimeStampsFPM<false, true>*>(pAlgorithm.get());
+    pAlgorithmTimeStamps->setDyDiGraph(&dyDiGraph);
+  }
+  else if (algorithmType == AlgorithmType::ESTreeMLTimeStampsFPM)
+  {
+    auto pAlgorithmTimeStamps = dynamic_cast<ESTreeMLTimeStampsFPM<false, true>*>(pAlgorithm.get());
     pAlgorithmTimeStamps->setDyDiGraph(&dyDiGraph);
   }
 

@@ -7,6 +7,7 @@
 #include "algorithm.reachability.ss.es/estree-bqueue.h"
 #include "algorithm.reachability.ss.es/simpleestree_timestamps.h"
 #include "algorithm.reachability.ss.es/simpleestree_timestamps_fpm.h"
+#include "algorithm.reachability.ss.es/estree-ml_timestamps_fpm.h"
 
 #include <memory>
 
@@ -28,6 +29,8 @@ std::unique_ptr<Algora::DynamicSingleSourceReachabilityAlgorithm> instantiate(Al
         return std::make_unique<Algora::SimpleESTreeTimeStamps<false, true>>();
     case AlgorithmType::SimpleESTreeTimeStampsFPM:
         return std::make_unique<Algora::SimpleESTreeTimeStampsFPM<false, true>>();
+    case AlgorithmType::ESTreeMLTimeStampsFPM:
+        return std::make_unique<Algora::ESTreeMLTimeStampsFPM<false, true>>();
     default:
         throw std::invalid_argument("invalid algorithm type!");
     }

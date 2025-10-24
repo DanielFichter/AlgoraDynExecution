@@ -7,6 +7,7 @@
 #include <graph.dyn/dynamicdigraph.h>
 #include <graph.incidencelist/incidencelistgraph.h>
 #include <algorithm.reachability.ss.es/simpleestree_timestamps.h>
+#include <algorithm.reachability.ss.es/estree-ml_timestamps_fpm.h>
 
 #include <memory>
 #include <iostream>
@@ -33,6 +34,11 @@ public:
     else if (algorithmType == AlgorithmType::SimpleESTreeTimeStampsFPM)
     {
       auto pAlgorithmTimeStamps = dynamic_cast<SimpleESTreeTimeStampsFPM<false, true>*>(pAlgorithm.get());
+      pAlgorithmTimeStamps->setDyDiGraph(&dynamicGraph);
+    }
+    else if (algorithmType == AlgorithmType::ESTreeMLTimeStampsFPM)
+    {
+      auto pAlgorithmTimeStamps = dynamic_cast<ESTreeMLTimeStampsFPM<false, true>*>(pAlgorithm.get());
       pAlgorithmTimeStamps->setDyDiGraph(&dynamicGraph);
     }
   }
