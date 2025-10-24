@@ -12,7 +12,8 @@ enum class AlgorithmType {
   SimpleESTreeSelectRandom,
   SimpleESTreeReservoirSampling,
   SimpleESTreeMultipleTreeArcs,
-  SimpleESTreeTimeStamps
+  SimpleESTreeTimeStamps,
+  SimpleESTreeTimeStampsFPM
 };
 
 const std::map<AlgorithmType, std::string> AlgorithmTypeNames{
@@ -23,7 +24,8 @@ const std::map<AlgorithmType, std::string> AlgorithmTypeNames{
     {AlgorithmType::SimpleESTreeMultipleTreeArcs,
      "SimpleESTreeMultipleTreeArcs"},
     {AlgorithmType::ESTree, "ESTree"},
-    {AlgorithmType::SimpleESTreeTimeStamps, "SimpleESTreeTimeStamps"}
+    {AlgorithmType::SimpleESTreeTimeStamps, "SimpleESTreeTimeStamps"},
+    {AlgorithmType::SimpleESTreeTimeStampsFPM, "SimpleESTreeTimeStampsFPM"}
   };
 
 std::unique_ptr<Algora::DynamicSingleSourceReachabilityAlgorithm>

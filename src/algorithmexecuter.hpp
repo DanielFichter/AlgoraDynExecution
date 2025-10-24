@@ -2,6 +2,7 @@
 
 #include "algorithmtype.hpp"
 #include "io.hpp"
+#include <algorithm.reachability.ss.es/simpleestree_timestamps_fpm.h>
 #include <algorithm.reachability.ss/dynamicsinglesourcereachabilityalgorithm.h>
 #include <graph.dyn/dynamicdigraph.h>
 #include <graph.incidencelist/incidencelistgraph.h>
@@ -27,6 +28,11 @@ public:
     if (algorithmType == AlgorithmType::SimpleESTreeTimeStamps)
     {
       auto pAlgorithmTimeStamps = dynamic_cast<SimpleESTreeTimeStamps<false, true>*>(pAlgorithm.get());
+      pAlgorithmTimeStamps->setDyDiGraph(&dynamicGraph);
+    }
+    else if (algorithmType == AlgorithmType::SimpleESTreeTimeStampsFPM)
+    {
+      auto pAlgorithmTimeStamps = dynamic_cast<SimpleESTreeTimeStampsFPM<false, true>*>(pAlgorithm.get());
       pAlgorithmTimeStamps->setDyDiGraph(&dynamicGraph);
     }
   }

@@ -5,6 +5,7 @@
 #include "graph.incidencelist/incidencelistvertex.h"
 
 #include <algorithm.reachability.ss.es/simpleestree_timestamps.h>
+#include <algorithm.reachability.ss.es/simpleestree_timestamps_fpm.h>
 #include <iostream>
 #include <memory>
 
@@ -47,6 +48,11 @@ bool unit_test(AlgorithmType algorithmType) {
   if (algorithmType == AlgorithmType::SimpleESTreeTimeStamps)
   {
     auto pAlgorithmTimeStamps = dynamic_cast<SimpleESTreeTimeStamps<false, true>*>(pAlgorithm.get());
+    pAlgorithmTimeStamps->setDyDiGraph(&dyDiGraph);
+  }
+  else if (algorithmType == AlgorithmType::SimpleESTreeTimeStampsFPM)
+  {
+    auto pAlgorithmTimeStamps = dynamic_cast<SimpleESTreeTimeStampsFPM<false, true>*>(pAlgorithm.get());
     pAlgorithmTimeStamps->setDyDiGraph(&dyDiGraph);
   }
 
