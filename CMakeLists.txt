@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_FLAGS "-O3 -march=native -mtune=native -flto=auto")
 
-add_executable(${PROJECT_NAME} src/main.cpp src/cli.cpp src/algorithmtype.cpp src/measureperformance.cpp src/testcorrectness.cpp src/booltostring.cpp src/io.cpp src/unit_test.cpp)
+add_executable(${PROJECT_NAME} src/main.cpp src/cli.cpp src/algorithmtype.cpp src/measureperformance.cpp src/testcorrectness.cpp src/booltostring.cpp src/io.cpp src/unit_test.cpp src/algorithmexecuter.cpp)
 
 include(FetchContent)
 FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz)
