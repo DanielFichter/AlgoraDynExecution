@@ -1,5 +1,6 @@
 #include "unit_test.hpp"
 
+#include "algorithmsettings.hpp"
 #include "algorithmtype.hpp"
 #include "graph.dyn/dynamicdigraph.h"
 #include "graph.incidencelist/incidencelistvertex.h"
@@ -10,11 +11,11 @@
 #include <iostream>
 #include <memory>
 
-bool unit_test(const std::vector<AlgorithmType> &algorithmTypes) {
+bool unit_test(const std::vector<std::pair<AlgorithmType, std::shared_ptr<AlgorithmSettings>>> &algorithmTypes) {
 
   bool result = true;
-  for (AlgorithmType algorithmType : algorithmTypes) {
-    if(!unit_test(algorithmType))
+  for (const auto& [algorithmType, algorithmSettings] : algorithmTypes) {
+    if(!unit_test(algorithmType, *algorithmSettings))
     {
         result = false;
     }
@@ -22,9 +23,9 @@ bool unit_test(const std::vector<AlgorithmType> &algorithmTypes) {
   return result;
 }
 
-bool unit_test(AlgorithmType algorithmType) {
+bool unit_test(AlgorithmType algorithmType, const AlgorithmSettings& algorithmSettings) {
 
-  std::cout << "unit testing for algorithm type " << AlgorithmTypeNames.at(algorithmType) << std::endl;
+  std::cout << "unit testing for algorithm type " << AlgorithmTypeNames.at(algorithmType) << algorithmSettings << std::endl;
 
   DynamicDiGraph dyDiGraph;
   dyDiGraph.addArc(1, 2, 0);
@@ -42,7 +43,7 @@ bool unit_test(AlgorithmType algorithmType) {
   dyDiGraph.removeArc(1, 3, 3);
   dyDiGraph.removeArc(5, 6, 4);
   std::unique_ptr<DynamicSingleSourceReachabilityAlgorithm> pAlgorithm =
-      instantiate(algorithmType);
+      instantiate(algorithmType, algorithmSettings);
 
   IncidenceListGraph *graph = dyDiGraph.getDiGraph();
   pAlgorithm->setGraph(graph);

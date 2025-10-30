@@ -1,9 +1,12 @@
 #include "algorithmexecuter.hpp"
+#include "algorithmsettings.hpp"
 
 AlgorithmExecuter::AlgorithmExecuter(const std::string &graphName,
-                                     AlgorithmType algorithmType)
+                                     AlgorithmType algorithmType,
+                                     const AlgorithmSettings &algorithmSettings)
     : dynamicGraph{readKroneckerGraph("graphs/"s + graphName)},
-      graph{dynamicGraph.getDiGraph()}, pAlgorithm{instantiate(algorithmType)} {
+      graph{dynamicGraph.getDiGraph()},
+      pAlgorithm{instantiate(algorithmType, algorithmSettings)} {
   std::cout << "graph has been read" << std::endl;
   pAlgorithm->setGraph(graph);
   if (algorithmType == AlgorithmType::SimpleESTreeTimeStamps) {

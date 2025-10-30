@@ -1,4 +1,5 @@
 #include "testcorrectness.hpp"
+#include "algorithmsettings.hpp"
 #include "settings.hpp"
 
 #include "algorithm.reachability.ss.es/simpleestree.h"
@@ -17,19 +18,21 @@ using namespace std::string_literals;
 
 void testCorrectness(const Settings &settings) {
 
-  for (const std::string& graphName: settings.graphNames)
-  {
-    for (AlgorithmType algorithmType : settings.algorithmTypes) {
-      
-      CorrectnessTester correctnessTester{graphName, algorithmType};
+  for (const std::string &graphName : settings.graphNames) {
+    for (const auto &[algorithmType, algorithmSettings] :
+         settings.algorithmInfos) {
+
+      CorrectnessTester correctnessTester{graphName, algorithmType,
+                                          *algorithmSettings};
       correctnessTester.execute();
     }
   }
 }
 
 CorrectnessTester::CorrectnessTester(const std::string &graphName,
-                                     AlgorithmType algorithmType)
-    : AlgorithmExecuter(graphName, algorithmType) {}
+                                     AlgorithmType algorithmType,
+                                     const AlgorithmSettings &algorithmSettings)
+    : AlgorithmExecuter(graphName, algorithmType, algorithmSettings) {}
 
 void CorrectnessTester::execute() {
   SimpleESTree correctAlgorithm;

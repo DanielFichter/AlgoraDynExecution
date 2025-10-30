@@ -1,5 +1,6 @@
 #pragma once
 
+#include "algorithmsettings.hpp"
 #include "algorithmtype.hpp"
 #include "io.hpp"
 #include <algorithm.reachability.ss.es/simpleestree_timestamps_fpm.h>
@@ -15,12 +16,14 @@
 using namespace Algora;
 using namespace std::string_literals;
 
+class AlgorithmSettings;
+
 class AlgorithmExecuter {
 
 public:
   virtual void execute() = 0;
 
-  AlgorithmExecuter(const std::string &graphName, AlgorithmType algorithmType);
+  AlgorithmExecuter(const std::string &graphName, AlgorithmType algorithmType, const AlgorithmSettings&);
 
   virtual ~AlgorithmExecuter() = default;
 

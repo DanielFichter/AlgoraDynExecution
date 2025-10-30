@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
     testCorrectness(settings);
     break;
   case ExecutionMode::unitTest:
-    unit_test(settings.algorithmTypes);
+    unit_test(settings.algorithmInfos);
     break;
   default:
     std::cerr << "invalid execution mode!" << std::endl;

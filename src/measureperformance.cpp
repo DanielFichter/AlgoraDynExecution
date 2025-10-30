@@ -1,5 +1,6 @@
 #include "measureperformance.hpp"
 #include "algorithmexecuter.hpp"
+#include "algorithmsettings.hpp"
 #include "algorithmtype.hpp"
 #include "operationstatistics.hpp"
 #include "operationtype.hpp"
@@ -25,10 +26,11 @@ void measurePerformance(const Settings &settings) {
        iteration++) {
     for (const std::string &graphName : settings.graphNames) {
       json graphJson;
-      for (AlgorithmType algorithmType : settings.algorithmTypes) {
+      for (const auto& [algorithmType, algorithmSettings] : settings.algorithmInfos) {
 
         PerformanceMeasurer performanceMeasurer{
-            graphName, algorithmType, settings.iterationCount, overallJson[graphName]};
+            graphName, algorithmType, *algorithmSettings,
+            settings.iterationCount, overallJson[graphName]};
         performanceMeasurer.execute();
       }
     }
@@ -45,6 +47,7 @@ void measurePerformance(const Settings &settings) {
 }
 
 namespace {
+
 bool applyNextOperationAndMeasure(
     DynamicDiGraph &dynamicGraph,
     std::map<OperationType, OperationStatistics> &operationDurations) {
@@ -63,9 +66,10 @@ bool applyNextOperationAndMeasure(
 
 PerformanceMeasurer::PerformanceMeasurer(const std::string &graphName,
                                          AlgorithmType algorithmType,
+                                         const AlgorithmSettings& algorithmSettings,
                                          unsigned iterationCount,
                                          json &outerJson)
-    : AlgorithmExecuter(graphName, algorithmType),
+    : AlgorithmExecuter(graphName, algorithmType, algorithmSettings),
       iterationCount(iterationCount), outerJson(outerJson),
       algorithmType(algorithmType) {}
 

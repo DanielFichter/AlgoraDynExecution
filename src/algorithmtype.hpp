@@ -6,6 +6,8 @@
 #include <memory>
 #include <string>
 
+class AlgorithmSettings;
+
 enum class AlgorithmType {
   ESTree,
   SimpleESTree,
@@ -31,4 +33,4 @@ const std::map<AlgorithmType, std::string> AlgorithmTypeNames{
   };
 
 std::unique_ptr<Algora::DynamicSingleSourceReachabilityAlgorithm>
-instantiate(AlgorithmType type);
+instantiate(AlgorithmType type, const AlgorithmSettings&);
