@@ -26,11 +26,16 @@ void measurePerformance(const Settings &settings) {
        iteration++) {
     for (const std::string &graphName : settings.graphNames) {
       json graphJson;
-      for (const auto& [algorithmType, algorithmSettings] : settings.algorithmInfos) {
+      for (const auto &[algorithmType, algorithmSettings] :
+           settings.algorithmInfos) {
 
         PerformanceMeasurer performanceMeasurer{
             graphName, algorithmType, *algorithmSettings,
             settings.iterationCount, overallJson[graphName]};
+        std::cout << "measuring performance of algorithm \""
+                  << AlgorithmTypeNames.at(algorithmType) << "\" on graph \""
+                  << graphName << "\"" << std::endl;
+
         performanceMeasurer.execute();
       }
     }
@@ -64,11 +69,10 @@ bool applyNextOperationAndMeasure(
 }
 } // namespace
 
-PerformanceMeasurer::PerformanceMeasurer(const std::string &graphName,
-                                         AlgorithmType algorithmType,
-                                         const AlgorithmSettings& algorithmSettings,
-                                         unsigned iterationCount,
-                                         json &outerJson)
+PerformanceMeasurer::PerformanceMeasurer(
+    const std::string &graphName, AlgorithmType algorithmType,
+    const AlgorithmSettings &algorithmSettings, unsigned iterationCount,
+    json &outerJson)
     : AlgorithmExecuter(graphName, algorithmType, algorithmSettings),
       iterationCount(iterationCount), outerJson(outerJson),
       algorithmType(algorithmType) {}

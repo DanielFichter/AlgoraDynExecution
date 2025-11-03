@@ -21,7 +21,9 @@ void testCorrectness(const Settings &settings) {
   for (const std::string &graphName : settings.graphNames) {
     for (const auto &[algorithmType, algorithmSettings] :
          settings.algorithmInfos) {
-
+      std::cout << "testing correctness of algorithm \""
+                << AlgorithmTypeNames.at(algorithmType) << "\" on graph \""
+                << graphName << "\"" << std::endl;
       CorrectnessTester correctnessTester{graphName, algorithmType,
                                           *algorithmSettings};
       correctnessTester.execute();
