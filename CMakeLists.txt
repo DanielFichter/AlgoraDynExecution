@@ -4,7 +4,11 @@ project(algoraDynExecution)
 set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_FLAGS "-O3 -march=native -mtune=native -flto=auto")
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(CMAKE_CXX_FLAGS "-O -march=x86-64 -mtune=generic -flto=auto -fno-inline")
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(CMAKE_CXX_FLAGS "-O3 -march=native -mtune=native -flto=auto")
+endif()
 
 add_executable(${PROJECT_NAME} src/main.cpp src/cli.cpp src/algorithmtype.cpp src/measureperformance.cpp src/testcorrectness.cpp src/booltostring.cpp src/io.cpp src/unit_test.cpp src/algorithmexecuter.cpp src/algorithmsettings.cpp src/createalgorithmsettings.cpp)
 
