@@ -14,10 +14,21 @@ AlgorithmExecuter::AlgorithmExecuter(const std::string &graphName,
         dynamic_cast<SimpleESTreeTimeStamps<false, true> *>(pAlgorithm.get());
     pAlgorithmTimeStamps->setDyDiGraph(&dynamicGraph);
   } else if (algorithmType == AlgorithmType::SimpleESTreeTimeStampsFPM) {
-    auto pAlgorithmTimeStamps =
-        dynamic_cast<SimpleESTreeTimeStampsFPM<false, true> *>(
-            pAlgorithm.get());
-    pAlgorithmTimeStamps->setDyDiGraph(&dynamicGraph);
+    auto settings = dynamic_cast<const SimpleESTreeTimeStampsFPMSettings &>(
+        algorithmSettings);
+    if (settings.preferOlder) {
+      auto pAlgorithmTimeStamps =
+          dynamic_cast<SimpleESTreeTimeStampsFPM<false, true> *>(
+              pAlgorithm.get());
+      pAlgorithmTimeStamps->setDyDiGraph(&dynamicGraph);
+    }
+    else {
+      auto pAlgorithmTimeStamps =
+          dynamic_cast<SimpleESTreeTimeStampsFPM<false, false> *>(
+              pAlgorithm.get());
+      pAlgorithmTimeStamps->setDyDiGraph(&dynamicGraph);
+    }
+
   } else if (algorithmType == AlgorithmType::ESTreeMLTimeStampsFPM) {
     auto pAlgorithmTimeStamps =
         dynamic_cast<ESTreeMLTimeStampsFPM<false, true> *>(pAlgorithm.get());
