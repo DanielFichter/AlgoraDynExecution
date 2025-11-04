@@ -5,8 +5,12 @@
 #include "algorithm.reachability.ss.es/estree-ml_timestamps_fpm.h"
 #include "algorithm.reachability.ss.es/simpleestree.h"
 #include "algorithm.reachability.ss.es/simpleestree_multipletreearcs.h"
-#include "algorithm.reachability.ss.es/simpleestree_reservoirsampling.h"
-#include "algorithm.reachability.ss.es/simpleestree_selectrandom.h"
+#include "algorithm.reachability.ss.es/simpleestree_reservoirsampling_lce.h"
+#include "algorithm.reachability.ss.es/simpleestree_reservoirsampling_mte.h"
+#include "algorithm.reachability.ss.es/simpleestree_reservoirsampling_swce.h"
+#include "algorithm.reachability.ss.es/simpleestree_selectrandom_lce.h"
+#include "algorithm.reachability.ss.es/simpleestree_selectrandom_mte.h"
+#include "algorithm.reachability.ss.es/simpleestree_selectrandom_swce.h"
 #include "algorithm.reachability.ss.es/simpleestree_timestamps.h"
 #include "algorithm.reachability.ss.es/simpleestree_timestamps_fpm.h"
 
@@ -24,13 +28,31 @@ instantiate(AlgorithmType type, const AlgorithmSettings &algorithmSettings) {
       return std::make_unique<Algora::SimpleESTree<false>>();
     }
   }
-  case AlgorithmType::SimpleESTreeSelectRandom: {
+  case AlgorithmType::SimpleESTreeSelectRandomMTE: {
     auto settings = dynamic_cast<const SimpleESTReeSelectRandomSettings &>(
         algorithmSettings);
     if (settings.reverseArcDirection) {
-      return std::make_unique<Algora::SimpleESTreeSelectRandom<true>>();
+      return std::make_unique<Algora::SimpleESTreeSelectRandomMTE<true>>();
     } else {
-      return std::make_unique<Algora::SimpleESTreeSelectRandom<false>>();
+      return std::make_unique<Algora::SimpleESTreeSelectRandomMTE<false>>();
+    }
+  }
+  case AlgorithmType::SimpleESTreeSelectRandomLCE: {
+    auto settings = dynamic_cast<const SimpleESTReeSelectRandomSettings &>(
+        algorithmSettings);
+    if (settings.reverseArcDirection) {
+      return std::make_unique<Algora::SimpleESTreeSelectRandomLCE<true>>();
+    } else {
+      return std::make_unique<Algora::SimpleESTreeSelectRandomLCE<false>>();
+    }
+  }
+  case AlgorithmType::SimpleESTreeSelectRandomSWCE: {
+    auto settings = dynamic_cast<const SimpleESTReeSelectRandomSettings &>(
+        algorithmSettings);
+    if (settings.reverseArcDirection) {
+      return std::make_unique<Algora::SimpleESTreeSelectRandomSWCE<true>>();
+    } else {
+      return std::make_unique<Algora::SimpleESTreeSelectRandomSWCE<false>>();
     }
   }
   case AlgorithmType::SimpleESTreeMultipleTreeArcs: {
@@ -52,14 +74,34 @@ instantiate(AlgorithmType type, const AlgorithmSettings &algorithmSettings) {
       return std::make_unique<Algora::SimpleESTreeMultipleTreeArcs<false, 3>>();
     }
   }
-  case AlgorithmType::SimpleESTreeReservoirSampling: {
+  case AlgorithmType::SimpleESTreeReservoirSamplingMTE: {
     auto settings = dynamic_cast<const SimpleESTReeReservoirSamplingSettings &>(
         algorithmSettings);
     if (settings.reverseArcDirection) {
-      return std::make_unique<Algora::SimpleESTreeReservoirSampling<true>>();
+      return std::make_unique<Algora::SimpleESTreeReservoirSamplingMTE<true>>();
     }
     else {
-      return std::make_unique<Algora::SimpleESTreeReservoirSampling<false>>();
+      return std::make_unique<Algora::SimpleESTreeReservoirSamplingMTE<false>>();
+    }
+  }
+  case AlgorithmType::SimpleESTreeReservoirSamplingLCE: {
+    auto settings = dynamic_cast<const SimpleESTReeReservoirSamplingSettings &>(
+        algorithmSettings);
+    if (settings.reverseArcDirection) {
+      return std::make_unique<Algora::SimpleESTreeReservoirSamplingLCE<true>>();
+    }
+    else {
+      return std::make_unique<Algora::SimpleESTreeReservoirSamplingLCE<false>>();
+    }
+  }
+  case AlgorithmType::SimpleESTreeReservoirSamplingSWCE: {
+    auto settings = dynamic_cast<const SimpleESTReeReservoirSamplingSettings &>(
+        algorithmSettings);
+    if (settings.reverseArcDirection) {
+      return std::make_unique<Algora::SimpleESTreeReservoirSamplingSWCE<true>>();
+    }
+    else {
+      return std::make_unique<Algora::SimpleESTreeReservoirSamplingSWCE<false>>();
     }
   }
   case AlgorithmType::ESTree:

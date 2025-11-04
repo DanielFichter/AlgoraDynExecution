@@ -33,10 +33,22 @@ create(AlgorithmType algorithmType, const std::vector<std::string> &settings) {
     return std::make_shared<OldESTreeSettings>();
   case AlgorithmType::SimpleESTree:
     return std::make_shared<SimpleESTreeSettings>(reverseArcDirection);
-  case AlgorithmType::SimpleESTreeSelectRandom:
+  case AlgorithmType::SimpleESTreeSelectRandomMTE:
     return std::make_shared<SimpleESTReeSelectRandomSettings>(
         reverseArcDirection);
-  case AlgorithmType::SimpleESTreeReservoirSampling:
+  case AlgorithmType::SimpleESTreeSelectRandomLCE:
+    return std::make_shared<SimpleESTReeSelectRandomSettings>(
+        reverseArcDirection);
+  case AlgorithmType::SimpleESTreeSelectRandomSWCE:
+    return std::make_shared<SimpleESTReeSelectRandomSettings>(
+        reverseArcDirection);
+  case AlgorithmType::SimpleESTreeReservoirSamplingMTE:
+    return std::make_shared<SimpleESTReeReservoirSamplingSettings>(
+        reverseArcDirection);
+  case AlgorithmType::SimpleESTreeReservoirSamplingLCE:
+    return std::make_shared<SimpleESTReeReservoirSamplingSettings>(
+        reverseArcDirection);
+  case AlgorithmType::SimpleESTreeReservoirSamplingSWCE:
     return std::make_shared<SimpleESTReeReservoirSamplingSettings>(
         reverseArcDirection);
   case AlgorithmType::SimpleESTreeTimeStamps: {
