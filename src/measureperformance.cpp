@@ -33,7 +33,7 @@ void measurePerformance(const Settings &settings) {
             graphName, algorithmType, *algorithmSettings,
             settings.iterationCount, overallJson[graphName]};
         std::cout << "measuring performance of algorithm \""
-                  << AlgorithmTypeNames.at(algorithmType) << "\" on graph \""
+                  << AlgorithmTypeNames.at(algorithmType) << *algorithmSettings << "\" on graph \""
                   << graphName << "\"" << std::endl;
 
         performanceMeasurer.execute();
@@ -75,7 +75,7 @@ PerformanceMeasurer::PerformanceMeasurer(
     json &outerJson)
     : AlgorithmExecuter(graphName, algorithmType, algorithmSettings),
       iterationCount(iterationCount), outerJson(outerJson),
-      algorithmType(algorithmType) {}
+      algorithmType(algorithmType), algorithmSettings(algorithmSettings) {}
 
 void PerformanceMeasurer::execute() {
   std::map<OperationType, OperationStatistics> operationDurations;
@@ -122,9 +122,9 @@ void PerformanceMeasurer::execute() {
     statistics.reset();
   }
 
-  const std::string algorithmTypeName = AlgorithmTypeNames.at(algorithmType);
+  const std::string algorithmName = AlgorithmTypeNames.at(algorithmType) + algorithmSettings.print();
 
-  outerJson[algorithmTypeName].push_back(current_output);
+  outerJson[algorithmName].push_back(current_output);
 
   cleanup();
 }

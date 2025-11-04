@@ -22,6 +22,7 @@ private:
   size_t operationIndex = 0;
   json &outerJson;
   AlgorithmType algorithmType;
+  const AlgorithmSettings& algorithmSettings;
 };
 
 void measurePerformance(const Settings &settings);
