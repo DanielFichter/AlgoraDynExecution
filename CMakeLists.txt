@@ -10,11 +10,14 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     set(CMAKE_CXX_FLAGS "-O3 -march=native -mtune=native -flto=auto")
 endif()
 
-add_executable(${PROJECT_NAME} src/main.cpp src/cli.cpp src/algorithmtype.cpp src/measureperformance.cpp src/testcorrectness.cpp src/booltostring.cpp src/io.cpp src/unit_test.cpp src/algorithmexecuter.cpp src/algorithmsettings.cpp src/createalgorithmsettings.cpp)
+add_executable(${PROJECT_NAME} src/main.cpp src/algoracli.cpp src/algorithmtype.cpp src/measureperformance.cpp src/testcorrectness.cpp src/booltostring.cpp src/io.cpp src/unit_test.cpp src/algorithmexecuter.cpp src/algorithmsettings.cpp src/createalgorithmsettings.cpp)
 
 include(FetchContent)
 FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz)
 FetchContent_MakeAvailable(json)
+
+FetchContent_Declare(cli11_proj QUIET GIT_REPOSITORY https://github.com/CLIUtils/CLI11.git GIT_TAG v2.3.2)
+FetchContent_MakeAvailable(cli11_proj)
 
 add_library(AlgoraCore STATIC IMPORTED)
 set_target_properties(AlgoraCore PROPERTIES
@@ -30,3 +33,4 @@ set_target_properties(AlgoraDyn PROPERTIES
 
 target_link_libraries(${PROJECT_NAME} PUBLIC AlgoraDyn AlgoraCore)
 target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(${PROJECT_NAME} PRIVATE CLI11::CLI11)
