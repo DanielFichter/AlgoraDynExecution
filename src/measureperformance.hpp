@@ -14,7 +14,7 @@ class PerformanceMeasurer : public AlgorithmExecuter {
 public:
   PerformanceMeasurer(const std::string &graphName, AlgorithmType,
                       const AlgorithmSettings&, unsigned iterationCount,
-                      json &outerJson);
+                      json &outerJson, double queryRatio);
   void execute() override;
 
 private:
@@ -23,6 +23,7 @@ private:
   json &outerJson;
   AlgorithmType algorithmType;
   const AlgorithmSettings& algorithmSettings;
+  const double queryRatio;
 };
 
 void measurePerformance(const Settings &settings);

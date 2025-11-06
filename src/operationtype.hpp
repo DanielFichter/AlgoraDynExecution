@@ -13,13 +13,15 @@ enum class OperationType {
   vertexAddition,
   vertexRemoval,
   noOperation,
+  query
 };
 
 const std::map<OperationType, std::string> operationTypeNames{
     {OperationType::arcAddition, "arcAddition"},
     {OperationType::arcRemoval, "arcRemoval"},
     {OperationType::vertexAddition, "vertexAddition"},
-    {OperationType::vertexRemoval, "vertexRemoval"}};
+    {OperationType::vertexRemoval, "vertexRemoval"},
+  {OperationType::query, "query"}};
 
 OperationType getLastOperationType(const DynamicDiGraph &dynamicGraph) {
   if (dynamicGraph.lastOpWasVertexAddition()) {

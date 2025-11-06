@@ -17,4 +17,5 @@ struct Settings {
   std::vector<AlgorithmInfo> algorithmInfos = {};
   ExecutionMode executionMode = ExecutionMode::measurePerformance;
   std::string outputPath = "";
+  double queryRatio = .1; // the ratio of queries among operations
 };

@@ -107,6 +107,8 @@ void AlgoraCLI::initializeApp() {
       },
       "Tells whether the algorithm should be tested for correctness, measured "
       "by performanc or unit tested with tree dumps");
+  app.add_option("-q,--queryRatio", settings.queryRatio,
+                 "Ratio of queries among operations");
 }
 
 const Settings &AlgoraCLI::parseSettings(int argc, char *argv[]) {

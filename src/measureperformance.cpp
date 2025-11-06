@@ -9,12 +9,16 @@
 #include "graph.dyn/dynamicdigraph.h"
 #include "graph.incidencelist/incidencelistvertex.h"
 
+#include <algorithm.reachability.ss/dynamicsinglesourcereachabilityalgorithm.h>
+#include <graph.incidencelist/incidencelistgraph.h>
+#include <graph/digraph.h>
 #include <nlohmann/json.hpp>
 
 #include <cstddef>
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <random>
 #include <string>
 
 using json = nlohmann::json;
@@ -29,12 +33,15 @@ void measurePerformance(const Settings &settings) {
       for (const auto &[algorithmType, algorithmSettings] :
            settings.algorithmInfos) {
 
-        PerformanceMeasurer performanceMeasurer{
-            graphName, algorithmType, *algorithmSettings,
-            settings.iterationCount, overallJson[graphName]};
+        PerformanceMeasurer performanceMeasurer{graphName,
+                                                algorithmType,
+                                                *algorithmSettings,
+                                                settings.iterationCount,
+                                                overallJson[graphName],
+                                                settings.queryRatio};
         std::cout << "measuring performance of algorithm \""
-                  << AlgorithmTypeNames.at(algorithmType) << *algorithmSettings << "\" on graph \""
-                  << graphName << "\"" << std::endl;
+                  << AlgorithmTypeNames.at(algorithmType) << *algorithmSettings
+                  << "\" on graph \"" << graphName << "\"" << std::endl;
 
         performanceMeasurer.execute();
       }
@@ -67,18 +74,35 @@ bool applyNextOperationAndMeasure(
 
   return operationsLeft;
 }
+
+void queryAndMeasure(IncidenceListGraph* graph,
+    std::unique_ptr<DynamicSingleSourceReachabilityAlgorithm> & pAlgorithm,
+    std::map<OperationType, OperationStatistics> &operationDurations, std::mt19937& randomEngine) {
+      size_t vertexIndex = randomEngine() % graph->getSize();
+      Vertex* vertexToQuery = graph->vertexAt(vertexIndex);
+      const auto timeBeforeOperation = std::chrono::high_resolution_clock::now();
+      pAlgorithm->query(vertexToQuery);
+      const auto timeAfterOperation = std::chrono::high_resolution_clock::now();
+      const std::chrono::nanoseconds duration =
+      timeAfterOperation - timeBeforeOperation;
+      operationDurations[OperationType::query].addOccurnece(duration);
+    }
+
 } // namespace
 
 PerformanceMeasurer::PerformanceMeasurer(
     const std::string &graphName, AlgorithmType algorithmType,
     const AlgorithmSettings &algorithmSettings, unsigned iterationCount,
-    json &outerJson)
+    json &outerJson, double queryRatio)
     : AlgorithmExecuter(graphName, algorithmType, algorithmSettings),
       iterationCount(iterationCount), outerJson(outerJson),
-      algorithmType(algorithmType), algorithmSettings(algorithmSettings) {}
+      algorithmType(algorithmType), algorithmSettings(algorithmSettings),
+      queryRatio(queryRatio) {}
 
 void PerformanceMeasurer::execute() {
   std::map<OperationType, OperationStatistics> operationDurations;
+
+  std::mt19937 randomEngine;
 
   DynamicDiGraph::DynamicTime maxTime = dynamicGraph.getMaxTime();
   size_t nOperations = dynamicGraph.countArcAdditions(0, maxTime) +
@@ -86,6 +110,8 @@ void PerformanceMeasurer::execute() {
   constexpr static double progressPercentage = .01;
   const size_t partOperations = static_cast<size_t>(
       static_cast<double>(nOperations) * progressPercentage);
+
+  const auto queryIndex = static_cast<size_t>(1 / queryRatio);
 
   json current_output;
 
@@ -105,6 +131,10 @@ void PerformanceMeasurer::execute() {
                 << " percent of operations executed" << std::endl;
     }
     operationIndex++;
+    if (operationIndex % queryIndex == 0) {
+      queryAndMeasure(graph, pAlgorithm, operationDurations, randomEngine);
+      operationIndex++;
+    }
   }
 
   for (const auto &[operationType, statistics] : operationDurations) {
@@ -122,7 +152,8 @@ void PerformanceMeasurer::execute() {
     statistics.reset();
   }
 
-  const std::string algorithmName = AlgorithmTypeNames.at(algorithmType) + algorithmSettings.print();
+  const std::string algorithmName =
+      AlgorithmTypeNames.at(algorithmType) + algorithmSettings.print();
 
   outerJson[algorithmName].push_back(current_output);
 
