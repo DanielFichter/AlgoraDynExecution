@@ -9,13 +9,11 @@ class AlgoraCLI {
 
 public:
   AlgoraCLI();
-  CLI::App& createApp();
   void printStartInfo() const;
-  const Settings& parseSettings();
-  std::string executionModeName;
-  std::vector<std::string> algorithmInfoStrings;
-
-private:
+  const Settings& parseSettings(int argc, char* argv[]);
+  
+  private:
   Settings settings;
+  void initializeApp();
   CLI::App app{"Execute Algorithms from AlgoraDyn"};
 };

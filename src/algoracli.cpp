@@ -83,9 +83,13 @@ ExecutionMode parseExecutionMode(const std::string &executionModeName) {
 
 AlgoraCLI::AlgoraCLI() { std::cout << std::boolalpha; }
 
-CLI::App &AlgoraCLI::createApp() {
-  app.add_option("-a,--algorithms", algorithmInfoStrings,
-                 "the algorithms that should be executed");
+void AlgoraCLI::initializeApp() {
+  app.add_option_function<std::vector<std::string>>(
+      "-a,--algorithms",
+      [this](const std::vector<std::string> &algorithmInfoStrings) {
+        settings.algorithmInfos = parseAlgorithmInfos(algorithmInfoStrings);
+      },
+      "the algorithms that should be executed");
   app.add_flag("-p,--prevent-paging", settings.preventPaging,
                "If true, tries to keep all the used memory in RAM");
   app.add_option("-g,--graphs", settings.graphNames,
@@ -96,19 +100,18 @@ CLI::App &AlgoraCLI::createApp() {
   app.add_option("-o,--output-path", settings.outputPath,
                  "Tells, where to write the measurements results in JSON "
                  "format. If omitted, the output will be written into cout");
-  app.add_option(
-      "-e,--execution-mode", executionModeName,
+  app.add_option_function<std::string>(
+      "-e,--execution-mode",
+      [this](const std::string &executionModeName) {
+        settings.executionMode = parseExecutionMode(executionModeName);
+      },
       "Tells whether the algorithm should be tested for correctness, measured "
       "by performanc or unit tested with tree dumps");
-
-  return app;
 }
 
-const Settings &AlgoraCLI::parseSettings() {
-  settings.algorithmInfos = parseAlgorithmInfos(algorithmInfoStrings);
-  if (!executionModeName.empty()) {
-    settings.executionMode = parseExecutionMode(executionModeName);
-  }
+const Settings &AlgoraCLI::parseSettings(int argc, char *argv[]) {
+  initializeApp();
+  app.parse(argc, argv);
   return settings;
 }
 

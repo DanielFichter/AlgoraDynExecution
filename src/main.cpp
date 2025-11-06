@@ -10,6 +10,8 @@
 #include <CLI/CLI.hpp>
 
 #include <algorithm.reachability.ss/dynamicsinglesourcereachabilityalgorithm.h>
+#include <cstdlib>
+#include <exception>
 #include <iostream>
 #include <string>
 #include <sys/mman.h>
@@ -20,11 +22,16 @@ using namespace std::string_literals;
 
 int main(int argc, char *argv[]) {
   AlgoraCLI cli;
-  CLI::App& app = cli.createApp();
   
-  CLI11_PARSE(app, argc, argv);
-  Settings settings = cli.parseSettings();
-  
+  Settings settings;
+  try {
+    settings = cli.parseSettings(argc, argv);
+  }
+  catch(const std::exception& parseError) {
+    std::cerr << "error occured while parsing user input: " << parseError.what() << std::endl;
+    return EXIT_FAILURE;
+  }
+
   if (settings.preventPaging) {
     mlockall(MCL_CURRENT | MCL_FUTURE);
   }
