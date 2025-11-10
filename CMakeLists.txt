@@ -21,13 +21,13 @@ FetchContent_MakeAvailable(cli11_proj)
 
 add_library(AlgoraCore STATIC IMPORTED)
 set_target_properties(AlgoraCore PROPERTIES
-    IMPORTED_LOCATION "${ALGORACORE_ROOT_DIR}/build/${CMAKE_BUILD_TYPE}/libAlgoraCore.a"
+    IMPORTED_LOCATION "${ALGORACORE_ROOT_DIR}/build/${ALGORA_BUILD_TYPE}/libAlgoraCore.a"
     INTERFACE_INCLUDE_DIRECTORIES "${ALGORACORE_ROOT_DIR}/src"
 )
 
 add_library(AlgoraDyn STATIC IMPORTED)
 set_target_properties(AlgoraDyn PROPERTIES
-    IMPORTED_LOCATION "${ALGORADYN_ROOT_DIR}/build/${CMAKE_BUILD_TYPE}/libAlgoraDyn.a"
+    IMPORTED_LOCATION "${ALGORADYN_ROOT_DIR}/build/${ALGORA_BUILD_TYPE}/libAlgoraDyn.a"
     INTERFACE_INCLUDE_DIRECTORIES "${ALGORADYN_ROOT_DIR}/src"
 )
 
