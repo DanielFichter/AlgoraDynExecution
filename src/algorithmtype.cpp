@@ -66,12 +66,17 @@ instantiate(AlgorithmType type, const AlgorithmSettings &algorithmSettings) {
       } else if (settings.nTreeArcs == 3) {
         return std::make_unique<
             Algora::SimpleESTreeMultipleTreeArcs<true, 3>>();
+      } else if (settings.nTreeArcs == 4) {
+        return std::make_unique<
+            Algora::SimpleESTreeMultipleTreeArcs<true, 4>>();
       }
     }
     if (settings.nTreeArcs == 2) {
       return std::make_unique<Algora::SimpleESTreeMultipleTreeArcs<false, 2>>();
     } else if (settings.nTreeArcs == 3) {
       return std::make_unique<Algora::SimpleESTreeMultipleTreeArcs<false, 3>>();
+    } else if (settings.nTreeArcs == 4) {
+      return std::make_unique<Algora::SimpleESTreeMultipleTreeArcs<false, 4>>();
     }
   }
   case AlgorithmType::SimpleESTreeReservoirSamplingMTE: {
@@ -79,9 +84,9 @@ instantiate(AlgorithmType type, const AlgorithmSettings &algorithmSettings) {
         algorithmSettings);
     if (settings.reverseArcDirection) {
       return std::make_unique<Algora::SimpleESTreeReservoirSamplingMTE<true>>();
-    }
-    else {
-      return std::make_unique<Algora::SimpleESTreeReservoirSamplingMTE<false>>();
+    } else {
+      return std::make_unique<
+          Algora::SimpleESTreeReservoirSamplingMTE<false>>();
     }
   }
   case AlgorithmType::SimpleESTreeReservoirSamplingLCE: {
@@ -89,19 +94,20 @@ instantiate(AlgorithmType type, const AlgorithmSettings &algorithmSettings) {
         algorithmSettings);
     if (settings.reverseArcDirection) {
       return std::make_unique<Algora::SimpleESTreeReservoirSamplingLCE<true>>();
-    }
-    else {
-      return std::make_unique<Algora::SimpleESTreeReservoirSamplingLCE<false>>();
+    } else {
+      return std::make_unique<
+          Algora::SimpleESTreeReservoirSamplingLCE<false>>();
     }
   }
   case AlgorithmType::SimpleESTreeReservoirSamplingSWCE: {
     auto settings = dynamic_cast<const SimpleESTReeReservoirSamplingSettings &>(
         algorithmSettings);
     if (settings.reverseArcDirection) {
-      return std::make_unique<Algora::SimpleESTreeReservoirSamplingSWCE<true>>();
-    }
-    else {
-      return std::make_unique<Algora::SimpleESTreeReservoirSamplingSWCE<false>>();
+      return std::make_unique<
+          Algora::SimpleESTreeReservoirSamplingSWCE<true>>();
+    } else {
+      return std::make_unique<
+          Algora::SimpleESTreeReservoirSamplingSWCE<false>>();
     }
   }
   case AlgorithmType::ESTree:
