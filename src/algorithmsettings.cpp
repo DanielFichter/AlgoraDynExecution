@@ -25,7 +25,7 @@ std::string SimpleESTReeReservoirSamplingSettings::print() const {
     return "<"s + toString(reverseArcDirection) + ">";
 }
 
-std::string SimpleESTreeMultipleTreeArcsSettings::print() const {
+std::string SimpleESDAGSettings::print() const {
     return "<"s + toString(reverseArcDirection) + ", "s + std::to_string(nTreeArcs) + ">";
 }
 

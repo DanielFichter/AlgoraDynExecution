@@ -14,14 +14,14 @@ create(AlgorithmType algorithmType, const std::vector<std::string> &settings) {
       settings.size() >= 1 ? toBool(settings[0]) : false;
 
   switch (algorithmType) {
-  case AlgorithmType::SimpleESTreeMultipleTreeArcs: {
+  case AlgorithmType::SimpleESDAG: {
 
     const unsigned nTreeArcs =
         settings.size() >= 2 ? (unsigned)std::stoi(settings[1]) : 2;
     if (nTreeArcs > 4 || nTreeArcs == 1) {
       throw std::runtime_error("invalid number of tree arcs");
     }
-    return std::make_shared<SimpleESTreeMultipleTreeArcsSettings>(
+    return std::make_shared<SimpleESDAGSettings>(
         reverseArcDirection, nTreeArcs);
   }
   case AlgorithmType::SimpleESTreeTimeStampsFPM: {

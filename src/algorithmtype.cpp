@@ -4,7 +4,7 @@
 #include "algorithm.reachability.ss.es/estree-bqueue.h"
 #include "algorithm.reachability.ss.es/estree-ml_timestamps_fpm.h"
 #include "algorithm.reachability.ss.es/simpleestree.h"
-#include "algorithm.reachability.ss.es/simpleestree_multipletreearcs.h"
+#include "algorithm.reachability.ss.es/simpleesdag.h"
 #include "algorithm.reachability.ss.es/simpleestree_reservoirsampling_lce.h"
 #include "algorithm.reachability.ss.es/simpleestree_reservoirsampling_mte.h"
 #include "algorithm.reachability.ss.es/simpleestree_reservoirsampling_swce.h"
@@ -55,28 +55,28 @@ instantiate(AlgorithmType type, const AlgorithmSettings &algorithmSettings) {
       return std::make_unique<Algora::SimpleESTreeSelectRandomSWCE<false>>();
     }
   }
-  case AlgorithmType::SimpleESTreeMultipleTreeArcs: {
+  case AlgorithmType::SimpleESDAG: {
     const auto settings =
-        dynamic_cast<const SimpleESTreeMultipleTreeArcsSettings &>(
+        dynamic_cast<const SimpleESDAGSettings &>(
             algorithmSettings);
     if (settings.reverseArcDirection) {
       if (settings.nTreeArcs == 2) {
         return std::make_unique<
-            Algora::SimpleESTreeMultipleTreeArcs<true, 2>>();
+            Algora::SimpleESDAG<true, 2>>();
       } else if (settings.nTreeArcs == 3) {
         return std::make_unique<
-            Algora::SimpleESTreeMultipleTreeArcs<true, 3>>();
+            Algora::SimpleESDAG<true, 3>>();
       } else if (settings.nTreeArcs == 4) {
         return std::make_unique<
-            Algora::SimpleESTreeMultipleTreeArcs<true, 4>>();
+            Algora::SimpleESDAG<true, 4>>();
       }
     }
     if (settings.nTreeArcs == 2) {
-      return std::make_unique<Algora::SimpleESTreeMultipleTreeArcs<false, 2>>();
+      return std::make_unique<Algora::SimpleESDAG<false, 2>>();
     } else if (settings.nTreeArcs == 3) {
-      return std::make_unique<Algora::SimpleESTreeMultipleTreeArcs<false, 3>>();
+      return std::make_unique<Algora::SimpleESDAG<false, 3>>();
     } else if (settings.nTreeArcs == 4) {
-      return std::make_unique<Algora::SimpleESTreeMultipleTreeArcs<false, 4>>();
+      return std::make_unique<Algora::SimpleESDAG<false, 4>>();
     }
   }
   case AlgorithmType::SimpleESTreeReservoirSamplingMTE: {

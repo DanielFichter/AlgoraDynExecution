@@ -35,8 +35,8 @@ struct SimpleESTReeReservoirSamplingSettings : public AlgorithmSettings {
   std::string print() const override;
 };
 
-struct SimpleESTreeMultipleTreeArcsSettings : public AlgorithmSettings {
-  explicit SimpleESTreeMultipleTreeArcsSettings(bool reverseArcDirectoin,
+struct SimpleESDAGSettings : public AlgorithmSettings {
+  explicit SimpleESDAGSettings(bool reverseArcDirectoin,
                                        unsigned nTreeArcs = 2)
       : reverseArcDirection(reverseArcDirectoin), nTreeArcs(nTreeArcs) {}
   bool reverseArcDirection = false;
