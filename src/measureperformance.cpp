@@ -12,6 +12,7 @@
 #include <algorithm.reachability.ss/dynamicsinglesourcereachabilityalgorithm.h>
 #include <graph.incidencelist/incidencelistgraph.h>
 #include <graph/digraph.h>
+#include <limits>
 #include <nlohmann/json.hpp>
 
 #include <cstddef>
@@ -75,18 +76,20 @@ bool applyNextOperationAndMeasure(
   return operationsLeft;
 }
 
-void queryAndMeasure(IncidenceListGraph* graph,
-    std::unique_ptr<DynamicSingleSourceReachabilityAlgorithm> & pAlgorithm,
-    std::map<OperationType, OperationStatistics> &operationDurations, std::mt19937& randomEngine) {
-      size_t vertexIndex = randomEngine() % graph->getSize();
-      Vertex* vertexToQuery = graph->vertexAt(vertexIndex);
-      const auto timeBeforeOperation = std::chrono::high_resolution_clock::now();
-      pAlgorithm->query(vertexToQuery);
-      const auto timeAfterOperation = std::chrono::high_resolution_clock::now();
-      const std::chrono::nanoseconds duration =
+void queryAndMeasure(
+    IncidenceListGraph *graph,
+    std::unique_ptr<DynamicSingleSourceReachabilityAlgorithm> &pAlgorithm,
+    std::map<OperationType, OperationStatistics> &operationDurations,
+    std::mt19937 &randomEngine) {
+  size_t vertexIndex = randomEngine() % graph->getSize();
+  Vertex *vertexToQuery = graph->vertexAt(vertexIndex);
+  const auto timeBeforeOperation = std::chrono::high_resolution_clock::now();
+  pAlgorithm->query(vertexToQuery);
+  const auto timeAfterOperation = std::chrono::high_resolution_clock::now();
+  const std::chrono::nanoseconds duration =
       timeAfterOperation - timeBeforeOperation;
-      operationDurations[OperationType::query].addOccurnece(duration);
-    }
+  operationDurations[OperationType::query].addOccurnece(duration);
+}
 
 } // namespace
 
@@ -105,18 +108,21 @@ void PerformanceMeasurer::execute() {
   std::mt19937 randomEngine;
 
   DynamicDiGraph::DynamicTime maxTime = dynamicGraph.getMaxTime();
-  size_t nOperations = dynamicGraph.countArcAdditions(0, maxTime) +
+  const size_t nOperations = dynamicGraph.countArcAdditions(0, maxTime) +
                        dynamicGraph.countArcRemovals(0, maxTime);
+  std::cout << "nOperations: " << nOperations << std::endl;
   constexpr static double progressPercentage = .01;
   const size_t partOperations = static_cast<size_t>(
       static_cast<double>(nOperations) * progressPercentage);
 
-  const auto queryIndex = static_cast<size_t>(1 / queryRatio);
+  const auto queryIndex = queryRatio <= 0 ? std::numeric_limits<size_t>::max()
+                                          : static_cast<size_t>(1 / queryRatio);
 
   json current_output;
 
   while (graph->getSize() < 1) {
     applyNextOperationAndMeasure(dynamicGraph, operationDurations);
+    incrementOperationIndex(partOperations, nOperations);
   }
 
   auto source = graph->vertexAt(0);
@@ -125,15 +131,9 @@ void PerformanceMeasurer::execute() {
 
   // execute all updates on the graph and measure the update durations
   while (applyNextOperationAndMeasure(dynamicGraph, operationDurations)) {
-    if (operationIndex % partOperations == 0 && operationIndex > 0) {
-      std::cout << static_cast<double>(operationIndex) /
-                       static_cast<double>(nOperations) * 100.0
-                << " percent of operations executed" << std::endl;
-    }
-    operationIndex++;
+    incrementOperationIndex(partOperations, nOperations);
     if (operationIndex % queryIndex == 0) {
       queryAndMeasure(graph, pAlgorithm, operationDurations, randomEngine);
-      operationIndex++;
     }
   }
 
@@ -157,5 +157,17 @@ void PerformanceMeasurer::execute() {
 
   outerJson[algorithmName].push_back(current_output);
 
+  std::cout << "operation index: " << operationIndex << std::endl;
+
   cleanup();
+}
+
+void PerformanceMeasurer::incrementOperationIndex(size_t partOperations,
+                                                  size_t nOperations) {
+  operationIndex++;
+  if (operationIndex % partOperations == 0 && operationIndex > 0) {
+    std::cout << static_cast<double>(operationIndex) /
+                     static_cast<double>(nOperations) * 100.0
+              << "% of the graph's operations executed" << std::endl;
+  }
 }

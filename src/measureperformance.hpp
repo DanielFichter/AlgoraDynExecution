@@ -24,6 +24,7 @@ private:
   AlgorithmType algorithmType;
   const AlgorithmSettings& algorithmSettings;
   const double queryRatio;
+  void incrementOperationIndex(size_t partOperations, size_t nOperations);
 };
 
 void measurePerformance(const Settings &settings);
