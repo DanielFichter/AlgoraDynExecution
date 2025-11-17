@@ -165,7 +165,7 @@ void PerformanceMeasurer::execute() {
 void PerformanceMeasurer::incrementOperationIndex(size_t partOperations,
                                                   size_t nOperations) {
   operationIndex++;
-  if (operationIndex % partOperations == 0 && operationIndex > 0) {
+  if (partOperations > 0 && operationIndex % partOperations == 0 && operationIndex > 0) {
     std::cout << static_cast<double>(operationIndex) /
                      static_cast<double>(nOperations) * 100.0
               << "% of the graph's operations executed" << std::endl;
