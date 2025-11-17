@@ -5,7 +5,8 @@
 
 DynamicDiGraph generateErdosRenyi(size_t n, size_t m) {
 
-    std::mt19937 randomEngine;
+    std::random_device randomDevice;
+    std::mt19937 randomEngine(randomDevice());
 
     DynamicDiGraph result;
 
