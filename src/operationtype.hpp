@@ -21,7 +21,8 @@ const std::map<OperationType, std::string> operationTypeNames{
     {OperationType::arcRemoval, "arcRemoval"},
     {OperationType::vertexAddition, "vertexAddition"},
     {OperationType::vertexRemoval, "vertexRemoval"},
-  {OperationType::query, "query"}};
+    {OperationType::query, "query"},
+    {OperationType::noOperation, "noOperation"}};
 
 OperationType getLastOperationType(const DynamicDiGraph &dynamicGraph) {
   if (dynamicGraph.lastOpWasVertexAddition()) {
