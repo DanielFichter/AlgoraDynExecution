@@ -1,6 +1,6 @@
 #include "io.hpp"
 
-Algora::DynamicDiGraph readKroneckerGraph(const std::string &filename) {
+Algora::DynamicDiGraph readGraph(const std::string &filename) {
   if (!std::filesystem::exists(std::filesystem::path{filename})) {
     throw std::runtime_error("file \""s + filename + "\" does not exist!");
   }

@@ -1,10 +1,11 @@
 #include "algorithmexecuter.hpp"
 #include "algorithmsettings.hpp"
+#include "io/streamdynamicdigraphreader.h"
 
 AlgorithmExecuter::AlgorithmExecuter(const std::string &graphName,
                                      AlgorithmType algorithmType,
                                      const AlgorithmSettings &algorithmSettings)
-    : dynamicGraph{readKroneckerGraph("graphs/"s + graphName)},
+    : dynamicGraph{readGraph("graphs/"s + graphName)},
       graph{dynamicGraph.getDiGraph()},
       pAlgorithm{instantiate(algorithmType, algorithmSettings)} {
   std::cout << "graph has been read" << std::endl;

@@ -9,4 +9,4 @@
 
 using namespace std::string_literals;
 
-Algora::DynamicDiGraph readKroneckerGraph(const std::string &filename);
+Algora::DynamicDiGraph readGraph(const std::string &filename);
