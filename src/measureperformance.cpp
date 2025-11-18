@@ -29,7 +29,8 @@ void measurePerformance(const Settings &settings) {
 
   for (unsigned iteration = 0; iteration < settings.iterationCount;
        iteration++) {
-    for (const auto &[graphDescription, pGraphInstantiator] : settings.graphInfos) {
+    for (const auto &[graphDescription, pGraphInstantiator] :
+         settings.graphInfos) {
       json graphJson;
       for (const auto &[algorithmType, algorithmSettings] :
            settings.algorithmInfos) {
@@ -165,6 +166,8 @@ void PerformanceMeasurer::incrementOperationIndex(size_t partOperations,
   operationIndex++;
   if (partOperations > 0 && operationIndex % partOperations == 0 &&
       operationIndex > 0) {
+
+    std::cout << "\x1b[1A\x1b[2K"; // clear line
     std::cout << static_cast<double>(operationIndex) /
                      static_cast<double>(nOperations) * 100.0
               << "% of the graph's operations executed" << std::endl;
