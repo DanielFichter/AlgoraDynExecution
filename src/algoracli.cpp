@@ -4,6 +4,7 @@
 #include "createalgorithmsettings.hpp"
 #include "executionmode.hpp"
 #include "graphreader.hpp"
+#include "randomgraphinstantiator.hpp"
 #include "settings.hpp"
 
 #include <CLI/CLI.hpp>
@@ -81,8 +82,52 @@ ExecutionMode parseExecutionMode(const std::string &executionModeName) {
                               "\"");
 }
 
+std::unique_ptr<RandomGraphInstantiator>
+parseRandomGraph(const std::string &graphDescription) {
+  std::string parameterString = graphDescription.substr(
+      7, graphDescription.size() - 1); // remove "random(" and ")"
+  const auto itRemove =
+      std::remove(parameterString.begin(), parameterString.end(), ' ');
+  parameterString.erase(itRemove, parameterString.end());
+
+  size_t commaIndex = parameterString.find(',');
+  std::string nString = parameterString.substr(0, commaIndex);
+  parameterString.erase(0, commaIndex + 1);
+  commaIndex = parameterString.find(',');
+  std::string mString = parameterString.substr(0, commaIndex);
+  parameterString.erase(0, commaIndex + 1);
+  commaIndex = parameterString.find(',');
+  std::string nOperationsString = parameterString.substr(0, commaIndex);
+  parameterString.erase(0, commaIndex + 1);
+  commaIndex = parameterString.find(',');
+  std::string proportionInsertionsString =
+      parameterString.substr(0, commaIndex);
+  parameterString.erase(0, commaIndex + 1);
+  commaIndex = parameterString.find(',');
+  std::string proportionDeletionsString = parameterString.substr(0, commaIndex);
+  parameterString.erase(0, commaIndex + 1);
+  commaIndex = parameterString.find(',');
+  std::string batchSizeString = parameterString.substr(0, commaIndex);
+
+  const RandomGraphInstantiator::size_type n = std::stoul(nString);
+  const RandomGraphInstantiator::size_type m = std::stoul(mString);
+  const RandomGraphInstantiator::size_type nOperations =
+      std::stoull(nOperationsString);
+  const auto proportionInsertions =
+      static_cast<unsigned>(std::stoul(proportionInsertionsString));
+  const auto proportionDeletions =
+      static_cast<unsigned>(std::stoul(proportionDeletionsString));
+  const auto batchSize = static_cast<unsigned>(std::stoul(batchSizeString));
+
+  return std::make_unique<RandomGraphInstantiator>(
+      n, m, nOperations, proportionInsertions, proportionDeletions, batchSize);
+}
+
 std::unique_ptr<GraphInstantiator>
 parseGraphInstantiator(const std::string &graphDescription) {
+  if (graphDescription.find("random(") == 0) {
+    return parseRandomGraph(graphDescription);
+  }
   return std::make_unique<GraphReader>(graphDescription);
 }
 
