@@ -10,7 +10,7 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     set(CMAKE_CXX_FLAGS "-O3 -march=native -mtune=native -flto=auto")
 endif()
 
-add_executable(${PROJECT_NAME} src/main.cpp src/algoracli.cpp src/algorithmtype.cpp src/measureperformance.cpp src/testcorrectness.cpp src/booltostring.cpp src/io.cpp src/unit_test.cpp src/algorithmexecuter.cpp src/algorithmsettings.cpp src/createalgorithmsettings.cpp src/erdosrenyi_generator.cpp)
+add_executable(${PROJECT_NAME} src/main.cpp src/algoracli.cpp src/algorithmtype.cpp src/measureperformance.cpp src/testcorrectness.cpp src/booltostring.cpp src/io.cpp src/unit_test.cpp src/algorithmexecuter.cpp src/algorithmsettings.cpp src/createalgorithmsettings.cpp src/erdosrenyi_generator.cpp src/graphreader.cpp src/randomgraphinstantiator.cpp)
 
 include(FetchContent)
 FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz)

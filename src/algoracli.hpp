@@ -10,7 +10,7 @@ class AlgoraCLI {
 public:
   AlgoraCLI();
   void printStartInfo() const;
-  const Settings& parseSettings(int argc, char* argv[]);
+  Settings&& parseSettings(int argc, char* argv[]);
   
   private:
   Settings settings;

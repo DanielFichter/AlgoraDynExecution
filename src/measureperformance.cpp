@@ -29,20 +29,20 @@ void measurePerformance(const Settings &settings) {
 
   for (unsigned iteration = 0; iteration < settings.iterationCount;
        iteration++) {
-    for (const std::string &graphName : settings.graphNames) {
+    for (const auto &[graphDescription, pGraphInstantiator] : settings.graphInfos) {
       json graphJson;
       for (const auto &[algorithmType, algorithmSettings] :
            settings.algorithmInfos) {
 
-        PerformanceMeasurer performanceMeasurer{graphName,
+        PerformanceMeasurer performanceMeasurer{*pGraphInstantiator,
                                                 algorithmType,
                                                 *algorithmSettings,
                                                 settings.iterationCount,
-                                                overallJson[graphName],
+                                                overallJson[graphDescription],
                                                 settings.queryRatio};
         std::cout << "measuring performance of algorithm \""
                   << AlgorithmTypeNames.at(algorithmType) << *algorithmSettings
-                  << "\" on graph \"" << graphName << "\"" << std::endl;
+                  << "\" on graph \"" << graphDescription << "\"" << std::endl;
 
         performanceMeasurer.execute();
       }
@@ -94,10 +94,10 @@ void queryAndMeasure(
 } // namespace
 
 PerformanceMeasurer::PerformanceMeasurer(
-    const std::string &graphName, AlgorithmType algorithmType,
+    GraphInstantiator &graphInstantiator, AlgorithmType algorithmType,
     const AlgorithmSettings &algorithmSettings, unsigned iterationCount,
     json &outerJson, double queryRatio)
-    : AlgorithmExecuter(graphName, algorithmType, algorithmSettings),
+    : AlgorithmExecuter(graphInstantiator, algorithmType, algorithmSettings),
       iterationCount(iterationCount), outerJson(outerJson),
       algorithmType(algorithmType), algorithmSettings(algorithmSettings),
       queryRatio(queryRatio) {}
@@ -109,7 +109,7 @@ void PerformanceMeasurer::execute() {
 
   DynamicDiGraph::DynamicTime maxTime = dynamicGraph.getMaxTime();
   const size_t nOperations = dynamicGraph.countArcAdditions(0, maxTime) +
-                       dynamicGraph.countArcRemovals(0, maxTime);
+                             dynamicGraph.countArcRemovals(0, maxTime);
   std::cout << "nOperations: " << nOperations << std::endl;
   constexpr static double progressPercentage = .01;
   const size_t partOperations = static_cast<size_t>(
@@ -165,7 +165,8 @@ void PerformanceMeasurer::execute() {
 void PerformanceMeasurer::incrementOperationIndex(size_t partOperations,
                                                   size_t nOperations) {
   operationIndex++;
-  if (partOperations > 0 && operationIndex % partOperations == 0 && operationIndex > 0) {
+  if (partOperations > 0 && operationIndex % partOperations == 0 &&
+      operationIndex > 0) {
     std::cout << static_cast<double>(operationIndex) /
                      static_cast<double>(nOperations) * 100.0
               << "% of the graph's operations executed" << std::endl;

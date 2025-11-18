@@ -3,6 +3,8 @@
 #include "algorithmtype.hpp"
 #include "createalgorithmsettings.hpp"
 #include "executionmode.hpp"
+#include "graphreader.hpp"
+#include "settings.hpp"
 
 #include <CLI/CLI.hpp>
 
@@ -79,6 +81,25 @@ ExecutionMode parseExecutionMode(const std::string &executionModeName) {
                               "\"");
 }
 
+std::unique_ptr<GraphInstantiator>
+parseGraphInstantiator(const std::string &graphDescription) {
+  return std::make_unique<GraphReader>(graphDescription);
+}
+
+Settings::GraphInfo parseGraphInfo(const std::string &graphDescription) {
+  return Settings::GraphInfo(
+      graphDescription, std::move(parseGraphInstantiator(graphDescription)));
+}
+
+std::vector<Settings::GraphInfo>
+parseGraphInfos(const std::vector<std::string> &graphDescriptions) {
+  std::vector<Settings::GraphInfo> result;
+  for (const auto &graphDescription : graphDescriptions) {
+    result.emplace_back(parseGraphInfo(graphDescription));
+  }
+  return result;
+}
+
 } // namespace
 
 AlgoraCLI::AlgoraCLI() { std::cout << std::boolalpha; }
@@ -92,8 +113,12 @@ void AlgoraCLI::initializeApp() {
       "the algorithms that should be executed");
   app.add_flag("-p,--prevent-paging", settings.preventPaging,
                "If true, tries to keep all the used memory in RAM");
-  app.add_option("-g,--graphs", settings.graphNames,
-                 "the graphs on which the algorithms should be executed");
+  app.add_option_function<std::vector<std::string>>(
+      "-g,--graphs",
+      [this](const std::vector<std::string> &graphDescriptions) {
+        settings.graphInfos = parseGraphInfos(graphDescriptions);
+      },
+      "the graphs on which the algorithms should be executed");
   app.add_option(
       "-c,--iterations", settings.iterationCount,
       "Tells how often each algorithm should be executed on each graph");
@@ -111,10 +136,10 @@ void AlgoraCLI::initializeApp() {
                  "Ratio of queries among operations");
 }
 
-const Settings &AlgoraCLI::parseSettings(int argc, char *argv[]) {
+Settings &&AlgoraCLI::parseSettings(int argc, char *argv[]) {
   initializeApp();
   app.parse(argc, argv);
-  return settings;
+  return std::move(settings);
 }
 
 void AlgoraCLI::printStartInfo() const {
@@ -138,8 +163,9 @@ void AlgoraCLI::printStartInfo() const {
               << ", ";
   }
   std::cout << "] on graphs [";
-  for (const std::string &graphName : settings.graphNames) {
-    std::cout << graphName << ",";
+  for (const auto &[graphDescription, graphInstantiator] :
+       settings.graphInfos) {
+    std::cout << graphDescription << ",";
   }
   std::cout << "] " << settings.iterationCount << " time"
             << (settings.iterationCount > 1 ? "s" : "")

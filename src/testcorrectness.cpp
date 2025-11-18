@@ -18,20 +18,20 @@ using namespace std::string_literals;
 
 void testCorrectness(const Settings &settings) {
 
-  for (const std::string &graphName : settings.graphNames) {
+  for (const auto &[graphDescription, pGraphInstantiator] : settings.graphInfos) {
     for (const auto &[algorithmType, algorithmSettings] :
          settings.algorithmInfos) {
       std::cout << "testing correctness of algorithm \""
                 << AlgorithmTypeNames.at(algorithmType) << *algorithmSettings << "\" on graph \""
-                << graphName << "\"" << std::endl;
-      CorrectnessTester correctnessTester{graphName, algorithmType,
+                << graphDescription << "\"" << std::endl;
+      CorrectnessTester correctnessTester{*pGraphInstantiator, algorithmType,
                                           *algorithmSettings};
       correctnessTester.execute();
     }
   }
 }
 
-CorrectnessTester::CorrectnessTester(const std::string &graphName,
+CorrectnessTester::CorrectnessTester(GraphInstantiator &graphName,
                                      AlgorithmType algorithmType,
                                      const AlgorithmSettings &algorithmSettings)
     : AlgorithmExecuter(graphName, algorithmType, algorithmSettings) {}

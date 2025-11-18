@@ -1,11 +1,11 @@
 #include "algorithmexecuter.hpp"
 #include "algorithmsettings.hpp"
-#include "io/streamdynamicdigraphreader.h"
+#include "graphinstatiator.hpp"
 
-AlgorithmExecuter::AlgorithmExecuter(const std::string &graphName,
+AlgorithmExecuter::AlgorithmExecuter(GraphInstantiator &graphInstantiator,
                                      AlgorithmType algorithmType,
                                      const AlgorithmSettings &algorithmSettings)
-    : dynamicGraph{readGraph("graphs/"s + graphName)},
+    : dynamicGraph{graphInstantiator.instantiate()},
       graph{dynamicGraph.getDiGraph()},
       pAlgorithm{instantiate(algorithmType, algorithmSettings)} {
   std::cout << "graph has been read" << std::endl;

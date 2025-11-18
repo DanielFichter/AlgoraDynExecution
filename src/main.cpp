@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
   
   Settings settings;
   try {
-    settings = cli.parseSettings(argc, argv);
+    settings = std::move(cli.parseSettings(argc, argv));
   }
   catch(const std::exception& parseError) {
     std::cerr << "error occured while parsing user input: " << parseError.what() << std::endl;

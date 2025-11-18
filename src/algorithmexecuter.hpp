@@ -2,7 +2,8 @@
 
 #include "algorithmsettings.hpp"
 #include "algorithmtype.hpp"
-#include "io.hpp"
+#include "graphinstatiator.hpp"
+
 #include <algorithm.reachability.ss.es/simpleestree_timestamps_fpm.h>
 #include <algorithm.reachability.ss/dynamicsinglesourcereachabilityalgorithm.h>
 #include <graph.dyn/dynamicdigraph.h>
@@ -11,19 +12,19 @@
 #include <algorithm.reachability.ss.es/estree-ml_timestamps_fpm.h>
 
 #include <memory>
-#include <iostream>
 
 using namespace Algora;
 using namespace std::string_literals;
 
 class AlgorithmSettings;
+class GraphInstantiator;
 
 class AlgorithmExecuter {
 
 public:
   virtual void execute() = 0;
 
-  AlgorithmExecuter(const std::string &graphName, AlgorithmType algorithmType, const AlgorithmSettings&);
+  AlgorithmExecuter(GraphInstantiator&, AlgorithmType algorithmType, const AlgorithmSettings&);
 
   virtual ~AlgorithmExecuter() = default;
 

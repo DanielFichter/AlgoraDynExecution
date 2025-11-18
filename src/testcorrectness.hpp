@@ -6,11 +6,12 @@
 
 class Settings;
 class AlgorithmSettings;
+class GraphInstantiator;
 
 void testCorrectness(const Settings &settings);
 
 class CorrectnessTester : public AlgorithmExecuter {
 public:
-  CorrectnessTester(const std::string &graphName, AlgorithmType, const AlgorithmSettings&);
+  CorrectnessTester(GraphInstantiator &, AlgorithmType, const AlgorithmSettings&);
   void execute() override;
 };

@@ -9,10 +9,11 @@ using json = nlohmann::json;
 
 class Settings;
 class AlgorithmSettings;
+class GraphInstantiator;
 
 class PerformanceMeasurer : public AlgorithmExecuter {
 public:
-  PerformanceMeasurer(const std::string &graphName, AlgorithmType,
+  PerformanceMeasurer(GraphInstantiator &, AlgorithmType,
                       const AlgorithmSettings&, unsigned iterationCount,
                       json &outerJson, double queryRatio);
   void execute() override;
