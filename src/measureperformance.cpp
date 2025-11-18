@@ -157,8 +157,6 @@ void PerformanceMeasurer::execute() {
 
   outerJson[algorithmName].push_back(current_output);
 
-  std::cout << "operation index: " << operationIndex << std::endl;
-
   cleanup();
 }
 
