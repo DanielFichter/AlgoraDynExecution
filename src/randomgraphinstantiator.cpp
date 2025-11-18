@@ -10,7 +10,7 @@ DynamicDiGraph RandomGraphInstantiator::instantiate() {
   randomDynamicDiGraphGenerator.setNumOperations(nOperations);
   randomDynamicDiGraphGenerator.setArcAdditionProportion(proportionInsertions);
   randomDynamicDiGraphGenerator.setArcRemovalProportion(proportionDeletions);
-  randomDynamicDiGraphGenerator.setMultiplier(batchSize);
+  randomDynamicDiGraphGenerator.setMultiplier(multiplier);
 
   DynamicDiGraph result;
   randomDynamicDiGraphGenerator.provideDynamicDiGraph(&result);
@@ -24,4 +24,4 @@ RandomGraphInstantiator::RandomGraphInstantiator(size_type n, size_type m,
                                                  unsigned batchSize)
     : n{n}, m{m}, nOperations{nOperations},
       proportionInsertions{proportionInsertions},
-      proportionDeletions{proportionDeletions}, batchSize{batchSize} {}
+      proportionDeletions{proportionDeletions}, multiplier{batchSize} {}

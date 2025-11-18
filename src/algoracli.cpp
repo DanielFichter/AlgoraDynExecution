@@ -107,7 +107,7 @@ parseRandomGraph(const std::string &graphDescription) {
   std::string proportionDeletionsString = parameterString.substr(0, commaIndex);
   parameterString.erase(0, commaIndex + 1);
   commaIndex = parameterString.find(',');
-  std::string batchSizeString = parameterString.substr(0, commaIndex);
+  std::string multiplierString = parameterString.substr(0, commaIndex);
 
   const RandomGraphInstantiator::size_type n = std::stoul(nString);
   const RandomGraphInstantiator::size_type m = std::stoul(mString);
@@ -117,7 +117,7 @@ parseRandomGraph(const std::string &graphDescription) {
       static_cast<unsigned>(std::stoul(proportionInsertionsString));
   const auto proportionDeletions =
       static_cast<unsigned>(std::stoul(proportionDeletionsString));
-  const auto batchSize = static_cast<unsigned>(std::stoul(batchSizeString));
+  const auto batchSize = static_cast<unsigned>(std::stoul(multiplierString));
 
   return std::make_unique<RandomGraphInstantiator>(
       n, m, nOperations, proportionInsertions, proportionDeletions, batchSize);

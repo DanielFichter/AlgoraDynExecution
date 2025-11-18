@@ -16,5 +16,5 @@ private:
   size_type nOperations;
   unsigned proportionInsertions;
   unsigned proportionDeletions;
-  unsigned batchSize;
+  unsigned multiplier;
 };
