@@ -60,39 +60,6 @@ void measurePerformance(const Settings &settings) {
   }
 }
 
-namespace {
-
-bool applyNextOperationAndMeasure(
-    DynamicDiGraph &dynamicGraph,
-    std::map<OperationType, OperationStatistics> &operationDurations) {
-  const auto timeBeforeOperation = std::chrono::high_resolution_clock::now();
-  const bool operationsLeft = dynamicGraph.applyNextOperation();
-  const auto timeAfterOperation = std::chrono::high_resolution_clock::now();
-
-  const std::chrono::nanoseconds duration =
-      timeAfterOperation - timeBeforeOperation;
-  const auto lastOperationType = getLastOperationType(dynamicGraph);
-  operationDurations[lastOperationType].addOccurnece(duration);
-
-  return operationsLeft;
-}
-
-void queryAndMeasure(
-    IncidenceListGraph *graph,
-    std::unique_ptr<DynamicSingleSourceReachabilityAlgorithm> &pAlgorithm,
-    std::map<OperationType, OperationStatistics> &operationDurations,
-    std::mt19937 &randomEngine) {
-  size_t vertexIndex = randomEngine() % graph->getSize();
-  Vertex *vertexToQuery = graph->vertexAt(vertexIndex);
-  const auto timeBeforeOperation = std::chrono::high_resolution_clock::now();
-  pAlgorithm->query(vertexToQuery);
-  const auto timeAfterOperation = std::chrono::high_resolution_clock::now();
-  const std::chrono::nanoseconds duration =
-      timeAfterOperation - timeBeforeOperation;
-  operationDurations[OperationType::query].addOccurnece(duration);
-}
-
-} // namespace
 
 PerformanceMeasurer::PerformanceMeasurer(
     GraphInstantiator &graphInstantiator, AlgorithmType algorithmType,
@@ -122,7 +89,7 @@ void PerformanceMeasurer::execute() {
   json current_output;
 
   while (graph->getSize() < 1) {
-    applyNextOperationAndMeasure(dynamicGraph, operationDurations);
+    applyNextOperationAndMeasure( operationDurations);
     incrementOperationIndex(partOperations, nOperations);
   }
 
@@ -131,10 +98,10 @@ void PerformanceMeasurer::execute() {
   pAlgorithm->run();
 
   // execute all updates on the graph and measure the update durations
-  while (applyNextOperationAndMeasure(dynamicGraph, operationDurations)) {
+  while (applyNextOperationAndMeasure( operationDurations)) {
     incrementOperationIndex(partOperations, nOperations);
     if (operationIndex % queryIndex == 0) {
-      queryAndMeasure(graph, pAlgorithm, operationDurations, randomEngine);
+      queryAndMeasure( operationDurations, randomEngine);
     }
   }
 
@@ -159,6 +126,33 @@ void PerformanceMeasurer::execute() {
   outerJson[algorithmName].push_back(current_output);
 
   cleanup();
+}
+
+bool PerformanceMeasurer::applyNextOperationAndMeasure(
+    std::map<OperationType, OperationStatistics> &operationDurations) {
+  const auto timeBeforeOperation = std::chrono::high_resolution_clock::now();
+  const bool operationsLeft = dynamicGraph.applyNextOperation();
+  const auto timeAfterOperation = std::chrono::high_resolution_clock::now();
+
+  const std::chrono::nanoseconds duration =
+      timeAfterOperation - timeBeforeOperation;
+  const auto lastOperationType = getLastOperationType(dynamicGraph);
+  operationDurations[lastOperationType].addOccurnece(duration);
+
+  return operationsLeft;
+}
+
+void PerformanceMeasurer::queryAndMeasure(
+    std::map<OperationType, OperationStatistics> &operationDurations,
+    std::mt19937 &randomEngine) {
+  size_t vertexIndex = randomEngine() % graph->getSize();
+  Vertex *vertexToQuery = graph->vertexAt(vertexIndex);
+  const auto timeBeforeOperation = std::chrono::high_resolution_clock::now();
+  pAlgorithm->query(vertexToQuery);
+  const auto timeAfterOperation = std::chrono::high_resolution_clock::now();
+  const std::chrono::nanoseconds duration =
+      timeAfterOperation - timeBeforeOperation;
+  operationDurations[OperationType::query].addOccurnece(duration);
 }
 
 void PerformanceMeasurer::incrementOperationIndex(size_t partOperations,
