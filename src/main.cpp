@@ -1,5 +1,6 @@
 
 #include "algoracli.hpp"
+#include "analyzedynamicdigraph.hpp"
 #include "createalgorithmsettings.hpp"
 #include "executionmode.hpp"
 #include "measureperformance.hpp"
@@ -22,13 +23,13 @@ using namespace std::string_literals;
 
 int main(int argc, char *argv[]) {
   AlgoraCLI cli;
-  
+
   Settings settings;
   try {
     settings = std::move(cli.parseSettings(argc, argv));
-  }
-  catch(const std::exception& parseError) {
-    std::cerr << "error occured while parsing user input: " << parseError.what() << std::endl;
+  } catch (const std::exception &parseError) {
+    std::cerr << "error occured while parsing user input: " << parseError.what()
+              << std::endl;
     return EXIT_FAILURE;
   }
 
@@ -45,6 +46,9 @@ int main(int argc, char *argv[]) {
     break;
   case ExecutionMode::unitTest:
     unit_test(settings.algorithmInfos);
+    break;
+  case ExecutionMode::analyzeGraphs:
+    analyzeDynamicDiGraphs(settings);
     break;
   default:
     std::cerr << "invalid execution mode!" << std::endl;
