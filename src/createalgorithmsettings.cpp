@@ -18,7 +18,7 @@ create(AlgorithmType algorithmType, const std::vector<std::string> &settings) {
 
     const unsigned nTreeArcs =
         settings.size() >= 2 ? (unsigned)std::stoi(settings[1]) : 2;
-    if (nTreeArcs > 4 || nTreeArcs == 1) {
+    if (nTreeArcs > 5 || nTreeArcs == 1) {
       throw std::runtime_error("invalid number of tree arcs");
     }
     return std::make_shared<SimpleESDAGSettings>(
