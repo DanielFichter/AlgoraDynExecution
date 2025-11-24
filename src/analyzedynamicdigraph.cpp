@@ -2,13 +2,12 @@
 #include "operationtype.hpp"
 
 #include <cstdlib>
-#include <graph/arc.h>
+#include <fstream>
 #include <graph.dyn/dynamicdigraph.h>
 #include <graph.incidencelist/incidencelistgraph.h>
+#include <graph/arc.h>
 #include <stdexcept>
 #include <unordered_map>
-#include <fstream>
-
 
 using namespace Algora;
 
@@ -33,6 +32,8 @@ json DynamicDiGraphAnalyzer::analyze(DynamicDiGraph &dynamicDiGraph) {
       arcBriths; // operation indices at which the arcs were inserted
   size_t arcLifeTimeSum = 0;
 
+  std::vector<size_t> arcLifeTimes;
+
   int arcObserverId = 0;
   diGraph->onArcAdd(&arcObserverId,
                     [&arcBriths, &operationIndex](Arc *pAddedArc) {
@@ -43,16 +44,20 @@ json DynamicDiGraphAnalyzer::analyze(DynamicDiGraph &dynamicDiGraph) {
                       arcBriths[pAddedArc] = operationIndex;
                     });
   diGraph->onArcRemove(&arcObserverId, [&arcBriths, &operationIndex,
-                                        &arcLifeTimeSum](Arc *pRemovedArc) {
-                                          if (pRemovedArc == nullptr)
-                                          {
-                                            throw std::runtime_error("removed arc is null");
-                                          }
-                                          if (arcBriths.count(pRemovedArc) == 0) {
-                                            std::cout << "Arc (" << pRemovedArc->getTail() << ", " << pRemovedArc->getHead() << ") is not contained in arcBirths map!" << std::endl;
-                                            std::exit(EXIT_FAILURE);
-                                          }
-    arcLifeTimeSum += operationIndex - arcBriths[pRemovedArc];
+                                        &arcLifeTimeSum,
+                                        &arcLifeTimes](Arc *pRemovedArc) {
+    if (pRemovedArc == nullptr) {
+      throw std::runtime_error("removed arc is null");
+    }
+    if (arcBriths.count(pRemovedArc) == 0) {
+      std::cout << "Arc (" << pRemovedArc->getTail() << ", "
+                << pRemovedArc->getHead()
+                << ") is not contained in arcBirths map!" << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+    size_t currentArcLifeTime = operationIndex - arcBriths[pRemovedArc];
+    arcLifeTimeSum += currentArcLifeTime;
+    arcLifeTimes.push_back(currentArcLifeTime);
     arcBriths.erase(pRemovedArc);
   });
 
@@ -79,7 +84,9 @@ json DynamicDiGraphAnalyzer::analyze(DynamicDiGraph &dynamicDiGraph) {
   diGraph->removeOnArcRemove(&arcObserverId);
 
   for (const auto &[pArc, birth] : arcBriths) {
-    arcLifeTimeSum += operationIndex - birth;
+    size_t currentLifeTime = operationIndex - birth;
+    arcLifeTimeSum += currentLifeTime;
+    arcLifeTimes.push_back(currentLifeTime);
   }
 
   size_t averageArcLifeTime = arcLifeTimeSum / nArcAdditions;
@@ -87,7 +94,8 @@ json DynamicDiGraphAnalyzer::analyze(DynamicDiGraph &dynamicDiGraph) {
   const double averageDensity = densitySum / nOperations;
 
   return {{"averageDensity", averageDensity},
-          {"averageArcLifeTime", averageArcLifeTime}};
+          {"averageArcLifeTime", averageArcLifeTime},
+          {"arcLifeTimes", arcLifeTimes}};
 }
 
 void analyzeDynamicDiGraphs(const Settings &settings) {
