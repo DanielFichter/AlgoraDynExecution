@@ -1,6 +1,7 @@
 #include "analyzedynamicdigraph.hpp"
 #include "operationtype.hpp"
 
+#include <cstddef>
 #include <cstdlib>
 #include <fstream>
 #include <graph.dyn/dynamicdigraph.h>
@@ -8,8 +9,22 @@
 #include <graph/arc.h>
 #include <stdexcept>
 #include <unordered_map>
+#include <utility>
 
 using namespace Algora;
+
+template <>
+struct std::hash<std::pair<DynamicDiGraph::VertexIdentifier,
+                           DynamicDiGraph::VertexIdentifier>> {
+  std::size_t
+  operator()(const std::pair<DynamicDiGraph::VertexIdentifier,
+                             DynamicDiGraph::VertexIdentifier> &arc) const {
+    const size_t tailHash = hash<DynamicDiGraph::VertexIdentifier>{}(arc.first);
+    const size_t headHash =
+        hash<DynamicDiGraph::VertexIdentifier>{}(arc.second);
+    return headHash ^ (tailHash << 1);
+  }
+};
 
 json DynamicDiGraphAnalyzer::analyze(DynamicDiGraph &dynamicDiGraph) {
 
@@ -34,15 +49,23 @@ json DynamicDiGraphAnalyzer::analyze(DynamicDiGraph &dynamicDiGraph) {
 
   std::vector<size_t> arcLifeTimes;
 
+  std::unordered_map<std::pair<DynamicDiGraph::VertexIdentifier,
+                               DynamicDiGraph::VertexIdentifier>,
+                     unsigned>
+      numArcOccurences;
+
   int arcObserverId = 0;
-  diGraph->onArcAdd(&arcObserverId,
-                    [&arcBriths, &operationIndex](Arc *pAddedArc) {
-                      if (arcBriths.count(pAddedArc)) {
-                        std::cout << "multi arc" << std::endl;
-                        std::exit(EXIT_FAILURE);
-                      }
-                      arcBriths[pAddedArc] = operationIndex;
-                    });
+  diGraph->onArcAdd(&arcObserverId, [&arcBriths, &operationIndex,
+                                     &numArcOccurences](Arc *pAddedArc) {
+    if (arcBriths.count(pAddedArc)) {
+      std::cout << "multi arc" << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+    arcBriths[pAddedArc] = operationIndex;
+    const auto tailId = pAddedArc->getTail()->getId();
+    const auto headId = pAddedArc->getHead()->getId();
+    numArcOccurences[{tailId, headId}]++;
+  });
   diGraph->onArcRemove(&arcObserverId, [&arcBriths, &operationIndex,
                                         &arcLifeTimeSum,
                                         &arcLifeTimes](Arc *pRemovedArc) {
@@ -93,9 +116,16 @@ json DynamicDiGraphAnalyzer::analyze(DynamicDiGraph &dynamicDiGraph) {
 
   const double averageDensity = densitySum / nOperations;
 
+  std::vector<unsigned> arcInsertionCounts;
+  arcInsertionCounts.reserve(numArcOccurences.size());
+  for (const auto &[arcInfo, numOccurences] : numArcOccurences) {
+    arcInsertionCounts.push_back(numOccurences);
+  }
+
   return {{"averageDensity", averageDensity},
           {"averageArcLifeTime", averageArcLifeTime},
-          {"arcLifeTimes", arcLifeTimes}};
+          {"arcLifeTimes", arcLifeTimes},
+          {"arcInsertionCounts", arcInsertionCounts}};
 }
 
 void analyzeDynamicDiGraphs(const Settings &settings) {
