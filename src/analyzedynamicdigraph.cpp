@@ -1,11 +1,13 @@
 #include "analyzedynamicdigraph.hpp"
 #include "operationtype.hpp"
+
 #include <cstdlib>
 #include <graph/arc.h>
 #include <graph.dyn/dynamicdigraph.h>
 #include <graph.incidencelist/incidencelistgraph.h>
 #include <stdexcept>
 #include <unordered_map>
+#include <fstream>
 
 
 using namespace Algora;
@@ -96,5 +98,12 @@ void analyzeDynamicDiGraphs(const Settings &settings) {
     DynamicDiGraphAnalyzer analyzer;
     result[graphDescription] = analyzer.analyze(dynamicDiGraph);
   }
-  std::cout << result;
+  std::string output = result.dump(2);
+
+  if (settings.outputPath.empty()) {
+    std::cout << output;
+  } else {
+    std::ofstream ofs{settings.outputPath};
+    ofs << output;
+  }
 }
