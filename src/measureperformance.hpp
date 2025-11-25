@@ -5,6 +5,7 @@
 #include "algorithmtype.hpp"
 #include "operationtype.hpp"
 
+#include <graph.dyn/dynamicdigraph.h>
 #include <nlohmann/json.hpp>
 
 #include <random>
@@ -21,6 +22,8 @@ public:
   PerformanceMeasurer(GraphInstantiator &, AlgorithmType,
                       const AlgorithmSettings &, unsigned iterationCount,
                       json &outerJson, double queryRatio);
+
+  void setSourceVertexId(DynamicDiGraph::VertexIdentifier);
   void execute() override;
 
 private:
@@ -33,9 +36,11 @@ private:
   void incrementOperationIndex(size_t partOperations, size_t nOperations);
   bool applyNextOperationAndMeasure(
       std::map<OperationType, OperationStatistics> &operationDurations);
-      void queryAndMeasure(
-    std::map<OperationType, OperationStatistics> &operationDurations,
-    std::mt19937 &randomEngine);
+  void queryAndMeasure(
+      std::map<OperationType, OperationStatistics> &operationDurations,
+      std::mt19937 &randomEngine);
+  DynamicDiGraph::VertexIdentifier sourceVertexId;
+  bool useSourceVertexId{false};
 };
 
 void measurePerformance(const Settings &settings);

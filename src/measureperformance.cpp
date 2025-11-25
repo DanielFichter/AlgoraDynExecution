@@ -5,6 +5,7 @@
 #include "operationstatistics.hpp"
 #include "operationtype.hpp"
 #include "settings.hpp"
+#include "sourcevertices.hpp"
 
 #include "graph.dyn/dynamicdigraph.h"
 #include "graph.incidencelist/incidencelistvertex.h"
@@ -41,6 +42,12 @@ void measurePerformance(const Settings &settings) {
                                                 settings.iterationCount,
                                                 overallJson[graphDescription],
                                                 settings.queryRatio};
+        if (sourceVertexIds.count(graphDescription) == 1 &&
+            iteration < sourceVertexIds.at(graphDescription).size()) {
+          DynamicDiGraph::VertexIdentifier sourceVertexId =
+              sourceVertexIds.at(graphDescription).at(iteration);
+          performanceMeasurer.setSourceVertexId(sourceVertexId);
+        }
         std::cout << "measuring performance of algorithm \""
                   << AlgorithmTypeNames.at(algorithmType) << *algorithmSettings
                   << "\" on graph \"" << graphDescription << "\"" << std::endl;
@@ -60,7 +67,6 @@ void measurePerformance(const Settings &settings) {
   }
 }
 
-
 PerformanceMeasurer::PerformanceMeasurer(
     GraphInstantiator &graphInstantiator, AlgorithmType algorithmType,
     const AlgorithmSettings &algorithmSettings, unsigned iterationCount,
@@ -69,6 +75,12 @@ PerformanceMeasurer::PerformanceMeasurer(
       iterationCount(iterationCount), outerJson(outerJson),
       algorithmType(algorithmType), algorithmSettings(algorithmSettings),
       queryRatio(queryRatio) {}
+
+void PerformanceMeasurer::setSourceVertexId(
+    DynamicDiGraph::VertexIdentifier newSourceVertexId) {
+  sourceVertexId = newSourceVertexId;
+  useSourceVertexId = true;
+}
 
 void PerformanceMeasurer::execute() {
   std::map<OperationType, OperationStatistics> operationDurations;
@@ -87,20 +99,30 @@ void PerformanceMeasurer::execute() {
 
   json current_output;
 
+  Vertex *sourceVertex;
+
   dynamicGraph.applyNextDelta();
 
-  std::cout << "graph initialized" << std::endl;
+  std::cout << "graph initialized"
+            << " (time stamp: " << dynamicGraph.getCurrentTime() << ")"
+            << std::endl;
 
-  auto source = graph->vertexAt(0);
-  pAlgorithm->setSource(source);
+  if (useSourceVertexId) {
+    sourceVertex = graph->vertexAt(sourceVertexId);
+  } else {
+    const auto idOfFirstVertex = dynamicGraph.idOfIthVertex(0);
+    sourceVertex = graph->vertexAt(idOfFirstVertex);
+  }
+  std::cout << "source vertex: " << sourceVertex->getId() << std::endl;
+  pAlgorithm->setSource(sourceVertex);
   pAlgorithm->run();
 
   std::cout << std::endl;
   // execute all updates on the graph and measure the update durations
-  while (applyNextOperationAndMeasure( operationDurations)) {
+  while (applyNextOperationAndMeasure(operationDurations)) {
     incrementOperationIndex(partOperations, nOperations);
     if (operationIndex % queryIndex == 0) {
-      queryAndMeasure( operationDurations, randomEngine);
+      queryAndMeasure(operationDurations, randomEngine);
     }
   }
 
