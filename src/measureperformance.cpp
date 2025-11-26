@@ -30,6 +30,8 @@ void measurePerformance(const Settings &settings) {
 
   for (unsigned iteration = 0; iteration < settings.iterationCount;
        iteration++) {
+    std::cout << std::endl << "iteration " << iteration << std::endl;
+
     for (const auto &[graphDescription, pGraphInstantiator] :
          settings.graphInfos) {
       json graphJson;
