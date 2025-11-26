@@ -13,6 +13,7 @@
 #include <algorithm.reachability.ss/dynamicsinglesourcereachabilityalgorithm.h>
 #include <graph.incidencelist/incidencelistgraph.h>
 #include <graph/digraph.h>
+#include <graph/vertex.h>
 #include <limits>
 #include <nlohmann/json.hpp>
 
@@ -21,6 +22,7 @@
 #include <iostream>
 #include <map>
 #include <random>
+#include <stdexcept>
 #include <string>
 
 using json = nlohmann::json;
@@ -101,7 +103,7 @@ void PerformanceMeasurer::execute() {
 
   json current_output;
 
-  Vertex *sourceVertex;
+  Vertex *pSourceVertex = nullptr;
 
   dynamicGraph.applyNextDelta();
 
@@ -110,13 +112,26 @@ void PerformanceMeasurer::execute() {
             << std::endl;
 
   if (useSourceVertexId) {
-    sourceVertex = graph->vertexAt(sourceVertexId);
+    std::string sourceVertexName = std::to_string(sourceVertexId);
+    graph->mapVerticesUntil(
+        [&pSourceVertex, sourceVertexName](Vertex *pVertex) {
+          if (sourceVertexName == pVertex->getName()) {
+            pSourceVertex = pVertex;
+          }
+        },
+        [&pSourceVertex](const Vertex *pVertex) -> bool {
+          return pSourceVertex;
+        });
+
+    if (pSourceVertex == nullptr) {
+      throw std::runtime_error("vertex with id \""s + sourceVertexName +
+                               "\" not found!");
+    }
   } else {
-    const auto idOfFirstVertex = dynamicGraph.idOfIthVertex(0);
-    sourceVertex = graph->vertexAt(idOfFirstVertex);
+    pSourceVertex = graph->vertexAt(0);
   }
-  std::cout << "source vertex: " << sourceVertex->getId() << std::endl;
-  pAlgorithm->setSource(sourceVertex);
+  std::cout << "source vertex: " << pSourceVertex->getName() << std::endl;
+  pAlgorithm->setSource(pSourceVertex);
   pAlgorithm->run();
 
   std::cout << std::endl;
