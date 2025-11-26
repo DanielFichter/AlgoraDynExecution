@@ -9,6 +9,7 @@
 
 #include <CLI/CLI.hpp>
 
+#include <filesystem>
 #include <iostream>
 #include <memory>
 #include <sstream>
@@ -17,6 +18,7 @@
 #include <vector>
 
 using namespace std::string_literals;
+namespace fs = std::filesystem;
 namespace {
 
 AlgorithmType parseAlgorithmType(const std::string &algorithmTypeName) {
@@ -145,6 +147,27 @@ parseGraphInfos(const std::vector<std::string> &graphDescriptions) {
   return result;
 }
 
+std::vector<std::string> collectGraphNames() {
+  std::vector<std::string> result;
+  for (const auto &directoryEntry :
+       fs::recursive_directory_iterator("graphs")) {
+    if (directoryEntry.is_regular_file()) {
+      std::string pathName = directoryEntry.path();
+      size_t slashIndex = pathName.find('/');
+      pathName.erase(0, slashIndex + 1);
+      result.push_back(pathName);
+    }
+  }
+  return result;
+}
+
+void collectGraphInfos(std::vector<Settings::GraphInfo> &graphInfos) {
+  for (const auto &graphName : collectGraphNames()) {
+    graphInfos.emplace_back(graphName,
+                            std::make_unique<GraphReader>(graphName));
+  }
+}
+
 } // namespace
 
 AlgoraCLI::AlgoraCLI() { std::cout << std::boolalpha; }
@@ -179,6 +202,9 @@ void AlgoraCLI::initializeApp() {
       "by performanc or unit tested with tree dumps");
   app.add_option("-q,--queryRatio", settings.queryRatio,
                  "Ratio of queries among operations");
+  app.add_flag_function("--allgraphs", [this](const bool &) {
+    collectGraphInfos(settings.graphInfos);
+  });
 }
 
 Settings &&AlgoraCLI::parseSettings(int argc, char *argv[]) {
