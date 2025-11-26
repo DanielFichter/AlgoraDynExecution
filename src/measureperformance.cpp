@@ -93,7 +93,8 @@ void PerformanceMeasurer::execute() {
 
   DynamicDiGraph::DynamicTime maxTime = dynamicGraph.getMaxTime();
   const size_t nOperations = dynamicGraph.countArcAdditions(0, maxTime) +
-                             dynamicGraph.countArcRemovals(0, maxTime);
+                             dynamicGraph.countArcRemovals(0, maxTime) +
+                             dynamicGraph.countVertexAdditions(0, maxTime);
   constexpr static double progressPercentage = .01;
   const size_t partOperations = static_cast<size_t>(
       static_cast<double>(nOperations) * progressPercentage);
@@ -105,7 +106,12 @@ void PerformanceMeasurer::execute() {
 
   Vertex *pSourceVertex = nullptr;
 
-  dynamicGraph.applyNextDelta();
+  std::cout << std::endl;
+
+  while (dynamicGraph.getCurrentTime() == 0) {
+    dynamicGraph.applyNextOperation();
+    incrementOperationIndex(partOperations, nOperations);
+  }
 
   std::cout << "graph initialized"
             << " (time stamp: " << dynamicGraph.getCurrentTime() << ")"
