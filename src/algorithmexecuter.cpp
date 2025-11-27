@@ -8,7 +8,7 @@ AlgorithmExecuter::AlgorithmExecuter(GraphInstantiator &graphInstantiator,
     : dynamicGraph{graphInstantiator.instantiate()},
       graph{dynamicGraph.getDiGraph()},
       pAlgorithm{instantiate(algorithmType, algorithmSettings)} {
-  std::cout << "graph has been read" << std::endl;
+  std::cout << "graph has been instantiated" << std::endl;
   pAlgorithm->setGraph(graph);
   if (algorithmType == AlgorithmType::SimpleESTreeTimeStamps) {
     auto pAlgorithmTimeStamps =
