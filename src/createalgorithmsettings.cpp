@@ -51,11 +51,6 @@ create(AlgorithmType algorithmType, const std::vector<std::string> &settings) {
   case AlgorithmType::SimpleESTreeReservoirSamplingSWCE:
     return std::make_shared<SimpleESTReeReservoirSamplingSettings>(
         reverseArcDirection);
-  case AlgorithmType::SimpleESTreeTimeStamps: {
-    bool preferOlder = settings.size() >= 2 ? toBool(settings[1]) : true;
-    return std::make_shared<SimpleESTreeTimeStampsSettings>(reverseArcDirection,
-                                                            preferOlder);
-  }
   case AlgorithmType::ESTreeMLTimeStampsFPM:
     bool preferOlder = settings.size() >= 2 ? toBool(settings[1]) : true;
     return std::make_shared<ESTreeMLTimeStampsSettings>(reverseArcDirection,

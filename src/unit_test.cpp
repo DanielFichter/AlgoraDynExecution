@@ -47,12 +47,7 @@ bool unit_test(AlgorithmType algorithmType, const AlgorithmSettings& algorithmSe
 
   IncidenceListGraph *graph = dyDiGraph.getDiGraph();
   pAlgorithm->setGraph(graph);
-  if (algorithmType == AlgorithmType::SimpleESTreeTimeStamps)
-  {
-    auto pAlgorithmTimeStamps = dynamic_cast<SimpleESTreeTimeStamps<false, true>*>(pAlgorithm.get());
-    pAlgorithmTimeStamps->setDyDiGraph(&dyDiGraph);
-  }
-  else if (algorithmType == AlgorithmType::SimpleESTreeTimeStampsFPM)
+  if (algorithmType == AlgorithmType::SimpleESTreeTimeStampsFPM)
   {
     auto pAlgorithmTimeStamps = dynamic_cast<SimpleESTreeTimeStampsFPM<false, true>*>(pAlgorithm.get());
     pAlgorithmTimeStamps->setDyDiGraph(&dyDiGraph);

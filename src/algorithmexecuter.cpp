@@ -10,11 +10,7 @@ AlgorithmExecuter::AlgorithmExecuter(GraphInstantiator &graphInstantiator,
       pAlgorithm{instantiate(algorithmType, algorithmSettings)} {
   std::cout << "graph has been instantiated" << std::endl;
   pAlgorithm->setGraph(graph);
-  if (algorithmType == AlgorithmType::SimpleESTreeTimeStamps) {
-    auto pAlgorithmTimeStamps =
-        dynamic_cast<SimpleESTreeTimeStamps<false, true> *>(pAlgorithm.get());
-    pAlgorithmTimeStamps->setDyDiGraph(&dynamicGraph);
-  } else if (algorithmType == AlgorithmType::SimpleESTreeTimeStampsFPM) {
+  if (algorithmType == AlgorithmType::SimpleESTreeTimeStampsFPM) {
     auto settings = dynamic_cast<const SimpleESTreeTimeStampsFPMSettings &>(
         algorithmSettings);
     if (settings.preferOlder) {
@@ -22,8 +18,7 @@ AlgorithmExecuter::AlgorithmExecuter(GraphInstantiator &graphInstantiator,
           dynamic_cast<SimpleESTreeTimeStampsFPM<false, true> *>(
               pAlgorithm.get());
       pAlgorithmTimeStamps->setDyDiGraph(&dynamicGraph);
-    }
-    else {
+    } else {
       auto pAlgorithmTimeStamps =
           dynamic_cast<SimpleESTreeTimeStampsFPM<false, false> *>(
               pAlgorithm.get());

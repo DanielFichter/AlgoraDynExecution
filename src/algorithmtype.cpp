@@ -112,22 +112,6 @@ instantiate(AlgorithmType type, const AlgorithmSettings &algorithmSettings) {
   }
   case AlgorithmType::ESTree:
     return std::make_unique<Algora::OldESTree>();
-  case AlgorithmType::SimpleESTreeTimeStamps: {
-    auto settings =
-        dynamic_cast<const SimpleESTreeTimeStampsSettings &>(algorithmSettings);
-    if (settings.reverseArcDirection) {
-      if (settings.preferOlder) {
-        return std::make_unique<Algora::SimpleESTreeTimeStamps<true, true>>();
-      } else {
-        return std::make_unique<Algora::SimpleESTreeTimeStamps<true, false>>();
-      }
-    }
-    if (settings.preferOlder) {
-      return std::make_unique<Algora::SimpleESTreeTimeStamps<false, true>>();
-    } else {
-      return std::make_unique<Algora::SimpleESTreeTimeStamps<false, false>>();
-    }
-  }
   case AlgorithmType::SimpleESTreeTimeStampsFPM: {
     const auto &settings =
         dynamic_cast<const SimpleESTreeTimeStampsFPMSettings &>(
