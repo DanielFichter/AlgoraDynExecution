@@ -205,6 +205,9 @@ void AlgoraCLI::initializeApp() {
   app.add_flag_function("--allgraphs", [this](const bool &) {
     collectGraphInfos(settings.graphInfos);
   });
+  app.add_option("-m,--rlimit_memlock", settings.rlimit_memlock,
+                 "Increases the memory limit that can be locked by the process "
+                 "to the provided value in bytes");
 }
 
 Settings &&AlgoraCLI::parseSettings(int argc, char *argv[]) {

@@ -6,6 +6,7 @@
 #include "graphinstatiator.hpp"
 
 #include <memory>
+#include <optional>
 #include <string>
 #include <utility>
 #include <vector>
@@ -22,6 +23,7 @@ struct Settings {
     executionMode = other.executionMode;
     outputPath = other.outputPath;
     queryRatio = other.queryRatio;
+    rlimit_memlock = other.rlimit_memlock;
 
     return *this;
   }
@@ -36,4 +38,5 @@ struct Settings {
   ExecutionMode executionMode = ExecutionMode::measurePerformance;
   std::string outputPath = "";
   double queryRatio = .1; // the ratio of queries among operations
+  unsigned long rlimit_memlock;
 };
