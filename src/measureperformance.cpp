@@ -56,7 +56,11 @@ void measurePerformance(const Settings &settings) {
                   << AlgorithmTypeNames.at(algorithmType) << *algorithmSettings
                   << "\" on graph \"" << graphDescription << "\"" << std::endl;
 
-        performanceMeasurer.execute();
+        try {
+          performanceMeasurer.execute();
+        } catch (const std::bad_alloc &badAlloc) {
+          std::cerr << "bad alloc was thrown!" << std::endl;
+        }
       }
     }
   }
