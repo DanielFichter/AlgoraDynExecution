@@ -36,8 +36,7 @@ struct SimpleESTReeReservoirSamplingSettings : public AlgorithmSettings {
 };
 
 struct SimpleESDAGSettings : public AlgorithmSettings {
-  explicit SimpleESDAGSettings(bool reverseArcDirectoin,
-                                       unsigned nTreeArcs = 2)
+  explicit SimpleESDAGSettings(bool reverseArcDirectoin, unsigned nTreeArcs = 2)
       : reverseArcDirection(reverseArcDirectoin), nTreeArcs(nTreeArcs) {}
   bool reverseArcDirection = false;
   unsigned nTreeArcs = 2;
@@ -46,6 +45,8 @@ struct SimpleESDAGSettings : public AlgorithmSettings {
 };
 
 struct OldESTreeSettings : public AlgorithmSettings {};
+
+struct SimpleIncrementalSettings : public AlgorithmSettings {};
 
 struct SimpleESTreeTimeStampsFPMSettings : public AlgorithmSettings {
   SimpleESTreeTimeStampsFPMSettings(bool reverseArcDirection, bool preferOlder)

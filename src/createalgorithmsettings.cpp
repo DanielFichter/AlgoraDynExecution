@@ -21,8 +21,8 @@ create(AlgorithmType algorithmType, const std::vector<std::string> &settings) {
     if (nTreeArcs > 5 || nTreeArcs == 1) {
       throw std::runtime_error("invalid number of tree arcs");
     }
-    return std::make_shared<SimpleESDAGSettings>(
-        reverseArcDirection, nTreeArcs);
+    return std::make_shared<SimpleESDAGSettings>(reverseArcDirection,
+                                                 nTreeArcs);
   }
   case AlgorithmType::SimpleESTreeTimeStampsFPM: {
     const bool preferOlder = settings.size() >= 2 ? toBool(settings[1]) : true;
@@ -51,10 +51,13 @@ create(AlgorithmType algorithmType, const std::vector<std::string> &settings) {
   case AlgorithmType::SimpleESTreeReservoirSamplingSWCE:
     return std::make_shared<SimpleESTReeReservoirSamplingSettings>(
         reverseArcDirection);
-  case AlgorithmType::ESTreeMLTimeStampsFPM:
+  case AlgorithmType::ESTreeMLTimeStampsFPM: {
     bool preferOlder = settings.size() >= 2 ? toBool(settings[1]) : true;
     return std::make_shared<ESTreeMLTimeStampsSettings>(reverseArcDirection,
                                                         preferOlder);
+  }
+  case AlgorithmType::SimpleIncremental:
+    return std::make_shared<SimpleIncrementalSettings>();
   }
   throw std::runtime_error("unknown algorithm type!");
 }
