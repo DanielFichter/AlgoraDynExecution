@@ -11,8 +11,8 @@
 #include "algorithm.reachability.ss.es/simpleestree_selectrandom_lce.h"
 #include "algorithm.reachability.ss.es/simpleestree_selectrandom_mte.h"
 #include "algorithm.reachability.ss.es/simpleestree_selectrandom_swce.h"
-#include "algorithm.reachability.ss.es/simpleestree_timestamps.h"
 #include "algorithm.reachability.ss.es/simpleestree_timestamps_fpm.h"
+#include "algorithm.reachability.ss/simpleincssreachalgorithm.h"
 
 #include <memory>
 
@@ -149,6 +149,10 @@ instantiate(AlgorithmType type, const AlgorithmSettings &algorithmSettings) {
       return std::make_unique<Algora::ESTreeMLTimeStampsFPM<false, false>>();
     }
   }
+
+  case AlgorithmType::SimpleIncremental:
+    return std::make_unique<Algora::SimpleIncSSReachAlgorithm<>>();
+
   default:
     throw std::invalid_argument("invalid algorithm type!");
   }
