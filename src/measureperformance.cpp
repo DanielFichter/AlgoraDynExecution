@@ -51,6 +51,10 @@ void measurePerformance(const Settings &settings) {
           DynamicDiGraph::VertexIdentifier sourceVertexId =
               sourceVertexIds.at(graphDescription).at(iteration);
           performanceMeasurer.setSourceVertexId(sourceVertexId);
+          if (graphDescription == "snap/as-caida") 
+          {
+            performanceMeasurer.setTimeStampZero(109);
+          }
         }
         std::cout << "measuring performance of algorithm \""
                   << AlgorithmTypeNames.at(algorithmType) << *algorithmSettings
@@ -90,6 +94,10 @@ void PerformanceMeasurer::setSourceVertexId(
   useSourceVertexId = true;
 }
 
+void PerformanceMeasurer::setTimeStampZero(size_t newTimeStampZero) {
+  timeStampZero = newTimeStampZero;
+}
+
 void PerformanceMeasurer::execute() {
   std::map<OperationType, OperationStatistics> operationDurations;
 
@@ -112,10 +120,11 @@ void PerformanceMeasurer::execute() {
 
   std::cout << std::endl;
 
-  while (dynamicGraph.getCurrentTime() == 0) {
+  while (dynamicGraph.getCurrentTime() <= timeStampZero) {
     dynamicGraph.applyNextOperation();
     incrementOperationIndex(partOperations, nOperations);
   }
+
 
   std::cout << "graph initialized"
             << " (time stamp: " << dynamicGraph.getCurrentTime() << ")"

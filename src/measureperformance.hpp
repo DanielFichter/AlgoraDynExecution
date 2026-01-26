@@ -5,6 +5,7 @@
 #include "algorithmtype.hpp"
 #include "operationtype.hpp"
 
+#include <cstddef>
 #include <graph.dyn/dynamicdigraph.h>
 #include <nlohmann/json.hpp>
 
@@ -24,6 +25,7 @@ public:
                       json &outerJson, double queryRatio);
 
   void setSourceVertexId(DynamicDiGraph::VertexIdentifier);
+  void setTimeStampZero(size_t);
   void execute() override;
 
 private:
@@ -41,6 +43,7 @@ private:
       std::mt19937 &randomEngine);
   DynamicDiGraph::VertexIdentifier sourceVertexId;
   bool useSourceVertexId{false};
+  size_t timeStampZero = 0;
 };
 
 void measurePerformance(const Settings &settings);
