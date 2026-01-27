@@ -7,9 +7,12 @@
 #include <graph.dyn/dynamicdigraph.h>
 #include <graph.incidencelist/incidencelistgraph.h>
 #include <graph/arc.h>
+#include <graph/vertex.h>
 #include <stdexcept>
 #include <unordered_map>
 #include <utility>
+#include <graph.dyn/dynamicdigraphstatistics.h>
+#include <vector>
 
 using namespace Algora;
 
@@ -122,10 +125,21 @@ json DynamicDiGraphAnalyzer::analyze(DynamicDiGraph &dynamicDiGraph) {
     arcInsertionCounts.push_back(numOccurences);
   }
 
+  std::vector<size_t> indegrees;
+  diGraph->mapVertices([&indegrees, diGraph](const Vertex* pVertex) {
+    const size_t indegree = diGraph->getInDegree(pVertex, false);
+    indegrees.push_back(indegree);
+  });
+
+  /* dynamicDiGraph.resetToBigBang();
+  DynamicDiGraphStatistics statistics;
+  statistics.analyzeDynamicDiGraph(&dynamicDiGraph);*/
+
   return {{"averageDensity", averageDensity},
           {"averageArcLifeTime", averageArcLifeTime},
           {"arcLifeTimes", arcLifeTimes},
-          {"arcInsertionCounts", arcInsertionCounts}};
+          {"arcInsertionCounts", arcInsertionCounts},
+        {"indegrees", indegrees}};
 }
 
 void analyzeDynamicDiGraphs(const Settings &settings) {
