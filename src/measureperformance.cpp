@@ -53,7 +53,7 @@ void measurePerformance(const Settings &settings) {
           performanceMeasurer.setSourceVertexId(sourceVertexId);
           if (graphDescription == "snap/as-caida") 
           {
-            performanceMeasurer.setTimeStampZero(109);
+            performanceMeasurer.setTimeStampZero(1);
           }
         }
         std::cout << "measuring performance of algorithm \""
