@@ -1,0 +1,1 @@
+./build/algoraDynExecution --algorithms SimpleESTree "SimpleESTreeTimeStamps<false, false>" --graphs kronecker/csize/answers "random(1000, 1000, 100, 1, 1, 1)" -o output.json
