@@ -186,25 +186,25 @@ void AlgoraCLI::initializeApp() {
       [this](const std::vector<std::string> &graphDescriptions) {
         settings.graphInfos = parseGraphInfos(graphDescriptions);
       },
-      "the graphs on which the algorithms should be executed");
+      "The filenames of graphs on which the algorithms should be executed. They have to be located in /graphs");
   app.add_option(
       "-c,--iterations", settings.iterationCount,
       "Tells how often each algorithm should be executed on each graph");
   app.add_option("-o,--output-path", settings.outputPath,
-                 "Tells, where to write the measurements results in JSON "
+                 "Where to write the measurements results in JSON "
                  "format. If omitted, the output will be written into cout");
   app.add_option_function<std::string>(
       "-e,--execution-mode",
       [this](const std::string &executionModeName) {
         settings.executionMode = parseExecutionMode(executionModeName);
       },
-      "Tells whether the algorithm should be tested for correctness, measured "
+      "Whether the algorithm should be tested for correctness, measured "
       "by performanc or unit tested with tree dumps");
   app.add_option("-q,--queryRatio", settings.queryRatio,
                  "Ratio of queries among operations");
   app.add_flag_function("--allgraphs", [this](const bool &) {
     collectGraphInfos(settings.graphInfos);
-  });
+  }, "selects all graph in /graphs and all it's recursive subfolders");
   app.add_option("-m,--rlimit_memlock", settings.rlimit_memlock,
                  "Increases the memory limit that can be locked by the process "
                  "to the provided value in bytes");
@@ -212,7 +212,12 @@ void AlgoraCLI::initializeApp() {
 
 Settings &&AlgoraCLI::parseSettings(int argc, char *argv[]) {
   initializeApp();
-  app.parse(argc, argv);
+  try{
+    app.parse(argc, argv);
+  }
+  catch(const CLI::ParseError& error) {
+    app.exit(error);
+  }
   return std::move(settings);
 }
 
