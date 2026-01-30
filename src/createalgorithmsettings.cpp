@@ -24,9 +24,9 @@ create(AlgorithmType algorithmType, const std::vector<std::string> &settings) {
     return std::make_shared<SimpleESDAGSettings>(reverseArcDirection,
                                                  nTreeArcs);
   }
-  case AlgorithmType::SimpleESTreeTimeStampsFPM: {
+  case AlgorithmType::SimpleESTreeTimeStamps: {
     const bool preferOlder = settings.size() >= 2 ? toBool(settings[1]) : true;
-    return std::make_shared<SimpleESTreeTimeStampsFPMSettings>(
+    return std::make_shared<SimpleESTreeTimeStampsSettings>(
         reverseArcDirection, preferOlder);
   }
   case AlgorithmType::ESTree:
@@ -51,11 +51,6 @@ create(AlgorithmType algorithmType, const std::vector<std::string> &settings) {
   case AlgorithmType::SimpleESTreeReservoirSamplingSWCE:
     return std::make_shared<SimpleESTReeReservoirSamplingSettings>(
         reverseArcDirection);
-  case AlgorithmType::ESTreeMLTimeStampsFPM: {
-    bool preferOlder = settings.size() >= 2 ? toBool(settings[1]) : true;
-    return std::make_shared<ESTreeMLTimeStampsSettings>(reverseArcDirection,
-                                                        preferOlder);
-  }
   case AlgorithmType::SimpleIncremental:
     return std::make_shared<SimpleIncrementalSettings>();
   }

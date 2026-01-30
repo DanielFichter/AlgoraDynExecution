@@ -18,8 +18,7 @@ enum class AlgorithmType {
   SimpleESTreeReservoirSamplingLCE,
   SimpleESTreeReservoirSamplingSWCE,
   SimpleESDAG,
-  SimpleESTreeTimeStampsFPM,
-  ESTreeMLTimeStampsFPM,
+  SimpleESTreeTimeStamps,
   SimpleIncremental,
 };
 
@@ -37,8 +36,7 @@ const std::map<AlgorithmType, std::string> AlgorithmTypeNames{
     {AlgorithmType::SimpleESDAG,
      "SimpleESDAG"},
     {AlgorithmType::ESTree, "ESTree"},
-    {AlgorithmType::SimpleESTreeTimeStampsFPM, "SimpleESTreeTimeStampsFPM"},
-    {AlgorithmType::ESTreeMLTimeStampsFPM, "ESTreeMLTimeStampsFPM"},
+    {AlgorithmType::SimpleESTreeTimeStamps, "SimpleESTreeTimeStamps"},
     {AlgorithmType::SimpleIncremental, "SimpleIncremental"}
   };
 

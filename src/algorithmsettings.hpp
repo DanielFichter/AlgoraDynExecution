@@ -48,16 +48,6 @@ struct OldESTreeSettings : public AlgorithmSettings {};
 
 struct SimpleIncrementalSettings : public AlgorithmSettings {};
 
-struct SimpleESTreeTimeStampsFPMSettings : public AlgorithmSettings {
-  SimpleESTreeTimeStampsFPMSettings(bool reverseArcDirection, bool preferOlder)
-      : reverseArcDirection(reverseArcDirection), preferOlder(preferOlder) {}
-
-  bool reverseArcDirection = false;
-  bool preferOlder = true;
-
-  std::string print() const override;
-};
-
 struct SimpleESTreeTimeStampsSettings : public AlgorithmSettings {
   SimpleESTreeTimeStampsSettings(bool reverseArcDirection, bool preferOlder)
       : reverseArcDirection(reverseArcDirection), preferOlder(preferOlder) {}

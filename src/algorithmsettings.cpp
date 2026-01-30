@@ -29,10 +29,6 @@ std::string SimpleESDAGSettings::print() const {
     return "<"s + toString(reverseArcDirection) + ", "s + std::to_string(nTreeArcs) + ">";
 }
 
-std::string SimpleESTreeTimeStampsFPMSettings::print() const {
-    return "<"s + toString(reverseArcDirection) + ", "s + toString(preferOlder) + ">";
-}
-
 std::string SimpleESTreeTimeStampsSettings::print() const {
     return "<"s + toString(reverseArcDirection) + ", "s + toString(preferOlder) + ">";
 }

@@ -2,7 +2,6 @@
 #include "algorithmsettings.hpp"
 
 #include "algorithm.reachability.ss.es/estree-bqueue.h"
-#include "algorithm.reachability.ss.es/estree-ml_timestamps_fpm.h"
 #include "algorithm.reachability.ss.es/simpleesdag.h"
 #include "algorithm.reachability.ss.es/simpleestree.h"
 #include "algorithm.reachability.ss.es/simpleestree_reservoirsampling_lce.h"
@@ -11,7 +10,7 @@
 #include "algorithm.reachability.ss.es/simpleestree_selectrandom_lce.h"
 #include "algorithm.reachability.ss.es/simpleestree_selectrandom_mte.h"
 #include "algorithm.reachability.ss.es/simpleestree_selectrandom_swce.h"
-#include "algorithm.reachability.ss.es/simpleestree_timestamps_fpm.h"
+#include "algorithm.reachability.ss.es/simpleestree_timestamps.h"
 #include "algorithm.reachability.ss/simpleincssreachalgorithm.h"
 
 #include <memory>
@@ -112,41 +111,24 @@ instantiate(AlgorithmType type, const AlgorithmSettings &algorithmSettings) {
   }
   case AlgorithmType::ESTree:
     return std::make_unique<Algora::OldESTree>();
-  case AlgorithmType::SimpleESTreeTimeStampsFPM: {
+  case AlgorithmType::SimpleESTreeTimeStamps: {
     const auto &settings =
-        dynamic_cast<const SimpleESTreeTimeStampsFPMSettings &>(
+        dynamic_cast<const SimpleESTreeTimeStampsSettings &>(
             algorithmSettings);
     if (settings.reverseArcDirection) {
       if (settings.preferOlder) {
         return std::make_unique<
-            Algora::SimpleESTreeTimeStampsFPM<true, true>>();
+            Algora::SimpleESTreeTimeStamps<true, true>>();
       } else {
         return std::make_unique<
-            Algora::SimpleESTreeTimeStampsFPM<true, false>>();
+            Algora::SimpleESTreeTimeStamps<true, false>>();
       }
     }
     if (settings.preferOlder) {
-      return std::make_unique<Algora::SimpleESTreeTimeStampsFPM<false, true>>();
+      return std::make_unique<Algora::SimpleESTreeTimeStamps<false, true>>();
     } else {
       return std::make_unique<
-          Algora::SimpleESTreeTimeStampsFPM<false, false>>();
-    }
-  }
-
-  case AlgorithmType::ESTreeMLTimeStampsFPM: {
-    auto settings =
-        dynamic_cast<const ESTreeMLTimeStampsSettings &>(algorithmSettings);
-    if (settings.reverseArcDirection) {
-      if (settings.preferOlder) {
-        return std::make_unique<Algora::ESTreeMLTimeStampsFPM<true, true>>();
-      } else {
-        return std::make_unique<Algora::ESTreeMLTimeStampsFPM<true, false>>();
-      }
-    }
-    if (settings.preferOlder) {
-      return std::make_unique<Algora::ESTreeMLTimeStampsFPM<false, true>>();
-    } else {
-      return std::make_unique<Algora::ESTreeMLTimeStampsFPM<false, false>>();
+          Algora::SimpleESTreeTimeStamps<false, false>>();
     }
   }
 
