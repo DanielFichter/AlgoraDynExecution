@@ -38,15 +38,11 @@ int main(int argc, char *argv[]) {
 
   rlimit memlockLimit;
   getrlimit(RLIMIT_MEMLOCK, &memlockLimit);
-  std::cout << "soft limit: " << memlockLimit.rlim_cur
-            << ", hard limit: " << memlockLimit.rlim_max << std::endl;
   if (settings.rlimit_memlock > memlockLimit.rlim_cur) {
     rlimit newMemLockLimit {settings.rlimit_memlock, settings.rlimit_memlock};
     setrlimit(RLIMIT_MEMLOCK, &newMemLockLimit);
   }
   getrlimit(RLIMIT_MEMLOCK, &memlockLimit);
-  std::cout << "soft limit: " << memlockLimit.rlim_cur
-            << ", hard limit: " << memlockLimit.rlim_max << std::endl;
 
   if (settings.preventPaging) {
     mlockall(MCL_CURRENT | MCL_FUTURE);
