@@ -2,7 +2,7 @@
 This CLI-tool enables users to execute fully dynamic single-source reachability algorithms from the AlgoraDyn library.
 
 ## Setup
-Make sure you `ALGORACORE_ROOT_DIR` and `ALGORADYN_ROOT_DIR` to the location of your built AlgoraCore and AlgoraDyn library, respectively. You can do this e.g. in your CMakeUserPresets.
+Make sure you `ALGORACORE_ROOT_DIR` and `ALGORADYN_ROOT_DIR` to the root directory of your AlgoraCore and AlgoraDyn library, respectively. You can do this e.g. in your CMakeUserPresets.
 Simply compile with CMake.
 
 ## Usage
